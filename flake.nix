@@ -120,7 +120,6 @@
           build = packages.default.overrideAttrs {
             doCheck = true;
           };
-          shell = devShells.default;
         };
 
       packages = with pkgs.trev.lib; rec {
