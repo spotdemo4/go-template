@@ -1,0 +1,65 @@
+name: build
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: spotdemo4/go-template/.github/actions/init@main
+
+      - run: |
+          mkdir binaries
+
+          nix build .#linux-amd64
+          tar czf ${{ github.event.repository.name }}-linux-amd64.tar.gz -C result/bin ${{ github.event.repository.name }}
+          mv ${{ github.event.repository.name }}-linux-amd64.tar.gz binaries
+
+          nix build .#linux-arm64
+          tar czf ${{ github.event.repository.name }}-linux-arm64.tar.gz -C result/bin ${{ github.event.repository.name }}
+          mv ${{ github.event.repository.name }}-linux-arm64.tar.gz binaries
+
+          nix build .#linux-arm
+          tar czf ${{ github.event.repository.name }}-linux-arm.tar.gz -C result/bin ${{ github.event.repository.name }}
+          mv ${{ github.event.repository.name }}-linux-arm.tar.gz binaries
+
+          nix build .#darwin-arm64
+          tar czf ${{ github.event.repository.name }}-darwin-arm64.tar.gz -C result/bin ${{ github.event.repository.name }}
+          mv ${{ github.event.repository.name }}-darwin-arm64.tar.gz binaries
+
+          nix build .#windows-amd64
+          zip -j ${{ github.event.repository.name }}-windows-amd64.zip result/bin/${{ github.event.repository.name }}.exe
+          mv ${{ github.event.repository.name }}-windows-amd64.zip binaries
+
+      - uses: softprops/action-gh-release@6cbd405e2c4e67a21c47fa9e383d020e4e28b836 # v2.3.3
+        with:
+          files: |-
+            binaries/*
+
+  package:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - uses: spotdemo4/go-template/.github/actions/init@main
+
+      - uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
+        with:
+          arguments: ".#build"
+
+      - name: Build & push images
+        run: |
+          nix build .#image
+
+          ./result | gzip --fast | skopeo copy \
+            --dest-creds=${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} \
+            docker-archive:/dev/stdin \
+            docker://ghcr.io/${{ github.repository }}:${GITHUB_REF_NAME#v}
