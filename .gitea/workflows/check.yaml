@@ -1,6 +1,8 @@
 name: check
 
 on:
+  push:
+    branches: ["main"]
   pull_request:
     branches: ["main"]
   workflow_dispatch:
@@ -16,6 +18,6 @@ jobs:
   flake:
     runs-on: ubuntu-latest
     steps:
-      - uses: spotdemo4/go-template/.github/actions/init@main
+      - uses: https://gitea.com/spotdemo4/go-template/.github/actions/init@main
 
       - run: nix flake check
