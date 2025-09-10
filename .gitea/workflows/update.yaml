@@ -18,14 +18,9 @@ jobs:
         with:
           arguments: ".#update"
 
-      - uses: https://github.com/actions/create-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b # v2.1.1
-        id: token
-        with:
-          app-id: ${{ vars.CLIENT_ID }}
-          private-key: ${{ secrets.PRIVATE_KEY }}
-
       - name: Renovate
         env:
-          RENOVATE_CONFIG_FILE: .github/renovate.json
-          RENOVATE_TOKEN: ${{ steps.token.outputs.token }}
+          RENOVATE_CONFIG_FILE: .gitea/renovate.json
+          RENOVATE_TOKEN: ${{ secrets.RENOVATE_TOKEN }}
+          RENOVATE_GITHUB_COM_TOKEN: ${{ secrets.GH_TOKEN }}
         run: renovate
