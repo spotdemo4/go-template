@@ -60,7 +60,7 @@
           shellHook = pkgs.trev.shellhook.ref;
         };
 
-        build = pkgs.mkShell {
+        release = pkgs.mkShell {
           packages = with pkgs; [
             skopeo
           ];
