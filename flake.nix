@@ -53,6 +53,9 @@
             golangci-lint
             alejandra
             prettier
+
+            # util
+            trev.bumper
           ];
           shellHook = pkgs.trev.shellhook.ref;
         };
