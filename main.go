@@ -3,5 +3,9 @@ package main
 import "log"
 
 func main() {
-	log.Println("Hello, World!")
+	log.Println(hello())
+}
+
+func hello() string {
+	return "Hello, World!"
 }

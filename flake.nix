@@ -39,7 +39,7 @@
         inherit system;
         overlays = [nur.overlays.default];
       };
-    in rec {
+    in {
       devShells = {
         default = pkgs.mkShell {
           packages = with pkgs; [
@@ -47,7 +47,6 @@
             go
             gotools
             gopls
-            air
 
             # lint
             golangci-lint
@@ -55,6 +54,7 @@
             prettier
 
             # util
+            air
             trev.bumper
           ];
           shellHook = pkgs.trev.shellhook.ref;
@@ -80,50 +80,45 @@
         };
       };
 
-      checks =
-        pkgs.trev.lib.mkChecks {
-          go = {
-            src = ./.;
-            deps = with pkgs; [
-              go
-              golangci-lint
-              trev.opengrep
-            ];
-            script = ''
-              golangci-lint run ./...
-              opengrep scan --quiet --error --config="${semgrep-rules}/go"
-            '';
-          };
-
-          nix = {
-            src = ./.;
-            deps = with pkgs; [
-              alejandra
-            ];
-            script = ''
-              alejandra -c .
-            '';
-          };
-
-          actions = {
-            src = ./.;
-            deps = with pkgs; [
-              prettier
-              action-validator
-              trev.renovate
-            ];
-            script = ''
-              prettier --check .
-              action-validator .github/**/*.yaml
-              renovate-config-validator .github/renovate.json
-            '';
-          };
-        }
-        // {
-          build = packages.default.overrideAttrs {
-            doCheck = true;
-          };
+      checks = pkgs.trev.lib.mkChecks {
+        go = {
+          src = ./.;
+          deps = with pkgs; [
+            go
+            golangci-lint
+            trev.opengrep
+          ];
+          script = ''
+            go test ./...
+            golangci-lint run ./...
+            opengrep scan --quiet --error --config="${semgrep-rules}/go"
+          '';
         };
+
+        nix = {
+          src = ./.;
+          deps = with pkgs; [
+            alejandra
+          ];
+          script = ''
+            alejandra -c .
+          '';
+        };
+
+        actions = {
+          src = ./.;
+          deps = with pkgs; [
+            prettier
+            action-validator
+            trev.renovate
+          ];
+          script = ''
+            prettier --check .
+            action-validator .github/**/*.yaml
+            renovate-config-validator .github/renovate.json
+          '';
+        };
+      };
 
       packages = with pkgs.trev.lib; rec {
         default = pkgs.buildGoModule (finalAttrs: {
