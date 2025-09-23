@@ -2,6 +2,7 @@
   "recommendations": [
     "golang.go",
     "jnoortheen.nix-ide",
-    "esbenp.prettier-vscode"
+    "esbenp.prettier-vscode",
+    "tamasfe.even-better-toml"
   ]
 }

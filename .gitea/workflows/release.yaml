@@ -62,6 +62,6 @@ jobs:
           curl -L -o /etc/containers/policy.json https://raw.githubusercontent.com/containers/image/main/default-policy.json
 
           ./result | gzip --fast | skopeo copy \
-            --dest-creds=${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} \
+            --dest-creds=${{ github.actor }}:${{ secrets.USER_TOKEN }} \
             docker-archive:/dev/stdin \
-            docker://${{ github.server_url }}/${{ github.repository }}:${GITHUB_REF_NAME#v}
+            docker${GITHUB_SERVER_URL#https}/${GITHUB_REPOSITORY@L}:${GITHUB_REF_NAME#v}
