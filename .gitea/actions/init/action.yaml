@@ -8,7 +8,7 @@ runs:
     - uses: https://github.com/DeterminateSystems/nix-installer-action@786fff0690178f1234e4e1fe9b536e94f5433196 # v20
       with:
         extra-conf: |
-          extra-substituters = https://trevnur.cachix.org
-          extra-trusted-public-keys = trevnur.cachix.org-1:hBd15IdszwT52aOxdKs5vNTbq36emvEeGqpb25Bkq6o=
+          extra-substituters = https://cache.trev.zip/nur
+          extra-trusted-public-keys = nur:DoXGy0SJ+5udhvZgtzwEXhQMuOCFN7FSXRmtiZhF1Vw=
 
     - uses: https://github.com/spotdemo4/nix-simple-cache-action@678b319b2d13680785ab65a0f5618a2e662ac04d # v1.4.8

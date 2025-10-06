@@ -3,10 +3,10 @@
 
   nixConfig = {
     extra-substituters = [
-      "https://trevnur.cachix.org"
+      "https://cache.trev.zip/nur"
     ];
     extra-trusted-public-keys = [
-      "trevnur.cachix.org-1:hBd15IdszwT52aOxdKs5vNTbq36emvEeGqpb25Bkq6o="
+      "nur:DoXGy0SJ+5udhvZgtzwEXhQMuOCFN7FSXRmtiZhF1Vw="
     ];
   };
 
