@@ -23,11 +23,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1761643117,
-        "narHash": "sha256-aipx6pAezL7XpYVOCJR6tvuo1Vpjg2w5CkxFeuakHhM=",
+        "lastModified": 1761729810,
+        "narHash": "sha256-4BWffJFWNk6sgGMGXQnwHwFBXszUvVU5E3N1OXb0EH4=",
         "owner": "spotdemo4",
         "repo": "nur",
-        "rev": "f86f385f4a3c0bf54da7c13881ef97eaa6d6afb1",
+        "rev": "2f2f9c0c0093a0ec88986e8465f8dee1b1d03740",
         "type": "github"
       },
       "original": {
@@ -48,11 +48,11 @@
     "semgrep-rules": {
       "flake": false,
       "locked": {
-        "lastModified": 1760660905,
-        "narHash": "sha256-33JRNqg5D5Av8mYIb/aUg3mSyp5fUr0c4UD6p1qDGzE=",
+        "lastModified": 1761809232,
+        "narHash": "sha256-bP5QAYTd7TSUl7T5Sn9pol7SzWmRGyjQfqg8mgJBgzs=",
         "owner": "semgrep",
         "repo": "semgrep-rules",
-        "rev": "518f71b883d431fa33268844b066033507e7c1b5",
+        "rev": "885b51b436172903a918cb70d127aad1b39369de",
         "type": "github"
       },
       "original": {
