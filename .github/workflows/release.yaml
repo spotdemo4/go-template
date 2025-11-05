@@ -5,60 +5,144 @@ on:
     tags: ["v*"]
 
 permissions:
-  contents: read
+  contents: write
+  packages: write
 
 jobs:
-  build:
+  linux-amd64:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - uses: spotdemo4/go-template/.github/actions/init@main
+      - name: Initialize
+        uses: spotdemo4/nix-init@448722165938617ea8b814719c33d73122390c9a # v1.2.0
 
-      - run: |
-          mkdir binaries
+      - name: Bundle
+        run: nix bundle --bundler github:spotdemo4/nur#goToLinuxAmd64 -o template-linux-amd64
 
-          nix build .#linux-amd64
-          tar czf ${{ github.event.repository.name }}-linux-amd64.tar.gz -C result/bin ${{ github.event.repository.name }}
-          mv ${{ github.event.repository.name }}-linux-amd64.tar.gz binaries
-
-          nix build .#linux-arm64
-          tar czf ${{ github.event.repository.name }}-linux-arm64.tar.gz -C result/bin ${{ github.event.repository.name }}
-          mv ${{ github.event.repository.name }}-linux-arm64.tar.gz binaries
-
-          nix build .#linux-arm
-          tar czf ${{ github.event.repository.name }}-linux-arm.tar.gz -C result/bin ${{ github.event.repository.name }}
-          mv ${{ github.event.repository.name }}-linux-arm.tar.gz binaries
-
-          nix build .#darwin-arm64
-          tar czf ${{ github.event.repository.name }}-darwin-arm64.tar.gz -C result/bin ${{ github.event.repository.name }}
-          mv ${{ github.event.repository.name }}-darwin-arm64.tar.gz binaries
-
-          nix build .#windows-amd64
-          zip -j ${{ github.event.repository.name }}-windows-amd64.zip result/bin/${{ github.event.repository.name }}.exe
-          mv ${{ github.event.repository.name }}-windows-amd64.zip binaries
-
-      - uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
+      - name: Release
+        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
         with:
-          files: |-
-            binaries/*
+          files: template-linux-amd64
 
-  package:
+  linux-amd64-deb:
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
     steps:
-      - uses: spotdemo4/go-template/.github/actions/init@main
+      - name: Initialize
+        uses: spotdemo4/nix-init@448722165938617ea8b814719c33d73122390c9a # v1.2.0
 
-      - uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
-        with:
-          arguments: ".#release"
-
-      - name: Build & push images
+      - name: Bundle
         run: |
-          nix build .#image
+          nix bundle --bundler github:NixOS/bundlers#toDEB -o result
+          mv result/*.deb template-linux-amd64.deb
 
-          ./result | gzip --fast | skopeo copy \
+      - name: Release
+        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
+        with:
+          files: template-linux-amd64.deb
+
+  linux-amd64-rpm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initialize
+        uses: spotdemo4/nix-init@448722165938617ea8b814719c33d73122390c9a # v1.2.0
+
+      - name: Bundle
+        run: |
+          nix bundle --bundler github:NixOS/bundlers#toRPM -o result
+          mv result/*.rpm template-linux-amd64.rpm
+
+      - name: Release
+        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
+        with:
+          files: template-linux-amd64.rpm
+
+  linux-amd64-deb:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initialize
+        uses: spotdemo4/nix-init@448722165938617ea8b814719c33d73122390c9a # v1.2.0
+
+      - name: Bundle
+        run: |
+          nix bundle --bundler github:NixOS/bundlers#toDEB -o result
+          mv result/*.deb template-linux-amd64.deb
+
+      - name: Release
+        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
+        with:
+          files: template-linux-amd64.deb
+
+  linux-arm64:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initialize
+        uses: spotdemo4/nix-init@448722165938617ea8b814719c33d73122390c9a # v1.2.0
+
+      - name: Bundle
+        run: nix bundle --bundler github:spotdemo4/nur#goToLinuxArm64 -o template-linux-arm64
+
+      - name: Release
+        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
+        with:
+          files: template-linux-arm64
+
+  linux-arm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initialize
+        uses: spotdemo4/nix-init@448722165938617ea8b814719c33d73122390c9a # v1.2.0
+
+      - name: Bundle
+        run: nix bundle --bundler github:spotdemo4/nur#goToLinuxArm -o template-linux-arm
+
+      - name: Release
+        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
+        with:
+          files: template-linux-arm
+
+  darwin-arm64:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initialize
+        uses: spotdemo4/nix-init@448722165938617ea8b814719c33d73122390c9a # v1.2.0
+
+      - name: Bundle
+        run: nix bundle --bundler github:spotdemo4/nur#goToDarwinArm64 -o template-darwin-arm64
+
+      - name: Release
+        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
+        with:
+          files: template-darwin-arm64
+
+  windows-amd64:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initialize
+        uses: spotdemo4/nix-init@448722165938617ea8b814719c33d73122390c9a # v1.2.0
+
+      - name: Bundle
+        run: nix bundle --bundler github:spotdemo4/nur#goToWindowsAmd64 -o template-windows-amd64.exe
+
+      - name: Release
+        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
+        with:
+          files: template-windows-amd64
+
+  container:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initialize
+        uses: spotdemo4/nix-init@448722165938617ea8b814719c33d73122390c9a # v1.2.0
+
+      - name: Bundle
+        run: nix bundle --bundler github:spotdemo4/nur#toDockerStream -o result
+
+      - name: Release
+        run: |
+          ./result \
+          | gzip --fast \
+          | nix shell nixpkgs#skopeo \
+            --inputs-from . \
+            --command skopeo copy \
             --dest-creds=${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} \
             docker-archive:/dev/stdin \
             docker://ghcr.io/${{ github.repository }}:${GITHUB_REF_NAME#v}

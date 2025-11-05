@@ -1,12 +1,12 @@
 {
-  description = "go-template";
+  description = "template";
 
   nixConfig = {
     extra-substituters = [
       "https://cache.trev.zip/nur"
     ];
     extra-trusted-public-keys = [
-      "nur:DoXGy0SJ+5udhvZgtzwEXhQMuOCFN7FSXRmtiZhF1Vw="
+      "nur:70xGHUW1+1b8FqBchldaunN//pZNVo6FKuPL4U/n844="
     ];
   };
 
@@ -37,7 +37,10 @@
     utils.lib.eachDefaultSystem (system: let
       pkgs = import nixpkgs {
         inherit system;
-        overlays = [nur.overlays.default];
+        overlays = [
+          nur.overlays.packages
+          nur.overlays.libs
+        ];
       };
     in {
       devShells = {
@@ -55,38 +58,36 @@
 
             # util
             air
-            trev.bumper
+            bumper
           ];
-          shellHook = pkgs.trev.shellhook.ref;
-        };
-
-        release = pkgs.mkShell {
-          packages = with pkgs; [
-            skopeo
-          ];
+          shellHook = pkgs.shellhook.ref;
         };
 
         update = pkgs.mkShell {
           packages = with pkgs; [
-            trev.renovate
+            renovate
           ];
         };
 
         vulnerable = pkgs.mkShell {
           packages = with pkgs; [
+            # go
+            go
             govulncheck
+
+            # nix
             flake-checker
           ];
         };
       };
 
-      checks = pkgs.trev.lib.mkChecks {
+      checks = pkgs.lib.mkChecks {
         go = {
           src = ./.;
           deps = with pkgs; [
             go
             golangci-lint
-            trev.opengrep
+            opengrep
           ];
           script = ''
             go test ./...
@@ -110,7 +111,7 @@
           deps = with pkgs; [
             prettier
             action-validator
-            trev.renovate
+            renovate
           ];
           script = ''
             prettier --check .
@@ -120,46 +121,23 @@
         };
       };
 
-      packages = with pkgs.trev.lib; rec {
-        default = pkgs.buildGoModule (finalAttrs: {
-          pname = "go-template";
-          version = "0.0.1";
-          src = ./.;
-          goSum = ./go.sum;
-          vendorHash = null;
-          env.CGO_ENABLED = 0;
+      packages.default = pkgs.buildGoModule (finalAttrs: {
+        pname = "go-template";
+        version = "0.0.1";
+        src = ./.;
+        goSum = ./go.sum;
+        vendorHash = null;
+        env.CGO_ENABLED = 0;
 
-          meta = {
-            description = "a go template project";
-            mainProgram = "go-template";
-            homepage = "https://github.com/spotdemo4/go-template";
-            changelog = "https://github.com/spotdemo4/go-template/releases/tag/v${finalAttrs.version}";
-            license = pkgs.lib.licenses.mit;
-            platforms = pkgs.lib.platforms.all;
-          };
-        });
-
-        linux-amd64 = go.moduleToPlatform default "linux" "amd64";
-        linux-arm64 = go.moduleToPlatform default "linux" "arm64";
-        linux-arm = go.moduleToPlatform default "linux" "arm";
-        darwin-arm64 = go.moduleToPlatform default "darwin" "arm64";
-        windows-amd64 = go.moduleToPlatform default "windows" "amd64";
-
-        image = pkgs.dockerTools.streamLayeredImage {
-          name = "${default.pname}";
-          tag = "${default.version}";
-          created = "now";
-          contents = with pkgs; [
-            default
-            dockerTools.caCertificates # needed for https
-          ];
-          config = {
-            Cmd = [
-              "${pkgs.lib.meta.getExe default}"
-            ];
-          };
+        meta = {
+          description = "template";
+          mainProgram = "go-template";
+          homepage = "https://github.com/spotdemo4/go-template";
+          changelog = "https://github.com/spotdemo4/go-template/releases/tag/v${finalAttrs.version}";
+          license = pkgs.lib.licenses.mit;
+          platforms = pkgs.lib.platforms.all;
         };
-      };
+      });
 
       formatter = pkgs.alejandra;
     });

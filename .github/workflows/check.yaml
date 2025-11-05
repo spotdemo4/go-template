@@ -3,6 +3,8 @@ name: check
 on:
   pull_request:
     branches: ["main"]
+  push:
+    branches: ["main"]
   workflow_dispatch:
 
 concurrency:
@@ -16,6 +18,8 @@ jobs:
   flake:
     runs-on: ubuntu-latest
     steps:
-      - uses: spotdemo4/go-template/.github/actions/init@main
+      - name: Initialize
+        uses: spotdemo4/nix-init@448722165938617ea8b814719c33d73122390c9a # v1.2.0
 
-      - run: nix flake check
+      - name: Run checks
+        run: nix flake check
