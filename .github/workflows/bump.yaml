@@ -5,6 +5,9 @@ on:
     - cron: "0 22 * * 1-5" # every weekday at 22:00 UTC
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   bump:
     runs-on: ubuntu-latest
@@ -12,8 +15,9 @@ jobs:
       - name: Initialize
         uses: spotdemo4/nix-init@448722165938617ea8b814719c33d73122390c9a # v1.2.0
         with:
+          app_id: ${{ vars.CLIENT_ID }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
           fetch_depth: 0
 
       - name: Bump
         uses: spotdemo4/bumper@93d1f7b51dc921f1e4b43899027b19bec17dfaec # v0.1.23
-
