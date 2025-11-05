@@ -13,11 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@448722165938617ea8b814719c33d73122390c9a # v1.2.0
+        uses: spotdemo4/nix-init@2f8f24dfce1017e0a9fabe0a2cf20b92f73c3075 # v1.2.2
         with:
           app_id: ${{ vars.CLIENT_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
           fetch_depth: 0
 
       - name: Bump
-        uses: spotdemo4/bumper@93d1f7b51dc921f1e4b43899027b19bec17dfaec # v0.1.23
+        uses: spotdemo4/bumper@8b9df22ba64a8cbc777429d5e96fedc6e6346c6c # v0.2.3
