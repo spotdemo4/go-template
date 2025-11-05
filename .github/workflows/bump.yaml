@@ -7,7 +7,7 @@ on:
 
 jobs:
   bump:
-    runs-on: node-24
+    runs-on: ubuntu-latest
     steps:
       - name: Initialize
         uses: spotdemo4/nix-init@448722165938617ea8b814719c33d73122390c9a # v1.2.0
