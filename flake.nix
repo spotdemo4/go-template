@@ -123,7 +123,7 @@
 
       packages.default = pkgs.buildGoModule (finalAttrs: {
         pname = "go-template";
-        version = "0.1.2";
+        version = "0.1.3";
         src = ./.;
         goSum = ./go.sum;
         vendorHash = null;
