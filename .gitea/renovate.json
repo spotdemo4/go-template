@@ -9,7 +9,7 @@
   "repositories": ["spotdemo4/go-template"],
 
   // repository
-  "extends": ["config:recommended", "group:allDigest"],
+  "extends": ["config:recommended"],
   "branchPrefix": "renovate/",
   "dependencyDashboardTitle": "Dependency Dashboard",
   "lockFileMaintenance": {
@@ -23,6 +23,16 @@
     {
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true
+    },
+    {
+      "groupName": "Nix Inputs",
+      "matchManagers": ["nix"],
+      "matchPackageNames": ["*"]
+    },
+    {
+      "groupName": "GitHub Actions",
+      "matchManagers": ["github-actions"],
+      "matchPackageNames": ["*"]
     }
   ]
 }

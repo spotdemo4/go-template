@@ -3,19 +3,17 @@ name: check
 on:
   pull_request:
     branches: ["main"]
+  push:
+    branches: ["main"]
   workflow_dispatch:
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref }}
-  cancel-in-progress: true
-
-permissions:
-  contents: read
 
 jobs:
   flake:
     runs-on: ubuntu-latest
     steps:
-      - uses: https://gitea.com/spotdemo4/go-template/.github/actions/init@main
+      - name: Initialize
+        uses: spotdemo4/nix-init@448722165938617ea8b814719c33d73122390c9a # v1.2.0
+        with:
+          token: ${{ secrets.READ_ONLY_TOKEN }}
 
       - run: nix flake check

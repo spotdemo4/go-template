@@ -1,67 +1,155 @@
-name: build
+name: release
 
 on:
   push:
     tags: ["v*"]
 
-permissions:
-  contents: read
-
 jobs:
-  build:
+  check:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - uses: https://gitea.com/spotdemo4/go-template/.github/actions/init@main
+      - name: Initialize
+        uses: spotdemo4/nix-init@db355b991de421e07d3c89f9edc18ef8f71394ea # v1.3.0
 
-      - run: |
-          mkdir binaries
+      - name: Run checks
+        run: nix flake check
 
-          nix build .#linux-amd64
-          tar czf ${{ github.event.repository.name }}-linux-amd64.tar.gz -C result/bin ${{ github.event.repository.name }}
-          mv ${{ github.event.repository.name }}-linux-amd64.tar.gz binaries
-
-          nix build .#linux-arm64
-          tar czf ${{ github.event.repository.name }}-linux-arm64.tar.gz -C result/bin ${{ github.event.repository.name }}
-          mv ${{ github.event.repository.name }}-linux-arm64.tar.gz binaries
-
-          nix build .#linux-arm
-          tar czf ${{ github.event.repository.name }}-linux-arm.tar.gz -C result/bin ${{ github.event.repository.name }}
-          mv ${{ github.event.repository.name }}-linux-arm.tar.gz binaries
-
-          nix build .#darwin-arm64
-          tar czf ${{ github.event.repository.name }}-darwin-arm64.tar.gz -C result/bin ${{ github.event.repository.name }}
-          mv ${{ github.event.repository.name }}-darwin-arm64.tar.gz binaries
-
-          nix build .#windows-amd64
-          zip -j ${{ github.event.repository.name }}-windows-amd64.zip result/bin/${{ github.event.repository.name }}.exe
-          mv ${{ github.event.repository.name }}-windows-amd64.zip binaries
-
-      - uses: https://gitea.com/actions/gitea-release-action@fe8e0322804b48e34e3bddbbf6335bd2b1046eb7 # v1
-        with:
-          files: |-
-            binaries/*
-
-  package:
+  release:
+    needs: check
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
     steps:
-      - uses: https://gitea.com/spotdemo4/go-template/.github/actions/init@main
+      - name: Release
+        uses: https://gitea.com/actions/gitea-release-action@fe8e0322804b48e34e3bddbbf6335bd2b1046eb7 # v1
 
-      - uses: https://github.com/nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
+  linux-amd64:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initialize
+        uses: spotdemo4/nix-init@db355b991de421e07d3c89f9edc18ef8f71394ea # v1.3.0
+
+      - name: Bundle
+        run: nix bundle --bundler github:spotdemo4/nur#goToLinuxAmd64 -o template-linux-amd64
+
+      - name: Release
+        uses: https://gitea.com/actions/gitea-release-action@fe8e0322804b48e34e3bddbbf6335bd2b1046eb7 # v1
         with:
-          arguments: ".#release"
+          files: template-linux-amd64
 
-      - name: Build & push images
+  linux-amd64-deb:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initialize
+        uses: spotdemo4/nix-init@db355b991de421e07d3c89f9edc18ef8f71394ea # v1.3.0
+
+      - name: Bundle
         run: |
-          nix build .#image
+          nix bundle --bundler github:NixOS/bundlers#toDEB -o result
+          cp result/*.deb template-linux-amd64.deb
 
+      - name: Release
+        uses: https://gitea.com/actions/gitea-release-action@fe8e0322804b48e34e3bddbbf6335bd2b1046eb7 # v1
+        with:
+          files: template-linux-amd64.deb
+
+  linux-amd64-rpm:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initialize
+        uses: spotdemo4/nix-init@db355b991de421e07d3c89f9edc18ef8f71394ea # v1.3.0
+
+      - name: Bundle
+        run: |
+          nix bundle --bundler github:NixOS/bundlers#toRPM -o result
+          cp result/*.rpm template-linux-amd64.rpm
+
+      - name: Release
+        uses: https://gitea.com/actions/gitea-release-action@fe8e0322804b48e34e3bddbbf6335bd2b1046eb7 # v1
+        with:
+          files: template-linux-amd64.rpm
+
+  linux-arm64:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initialize
+        uses: spotdemo4/nix-init@db355b991de421e07d3c89f9edc18ef8f71394ea # v1.3.0
+
+      - name: Bundle
+        run: nix bundle --bundler github:spotdemo4/nur#goToLinuxArm64 -o template-linux-arm64
+
+      - name: Release
+        uses: https://gitea.com/actions/gitea-release-action@fe8e0322804b48e34e3bddbbf6335bd2b1046eb7 # v1
+        with:
+          files: template-linux-arm64
+
+  linux-arm:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initialize
+        uses: spotdemo4/nix-init@db355b991de421e07d3c89f9edc18ef8f71394ea # v1.3.0
+
+      - name: Bundle
+        run: nix bundle --bundler github:spotdemo4/nur#goToLinuxArm -o template-linux-arm
+
+      - name: Release
+        uses: https://gitea.com/actions/gitea-release-action@fe8e0322804b48e34e3bddbbf6335bd2b1046eb7 # v1
+        with:
+          files: template-linux-arm
+
+  darwin-arm64:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initialize
+        uses: spotdemo4/nix-init@db355b991de421e07d3c89f9edc18ef8f71394ea # v1.3.0
+
+      - name: Bundle
+        run: nix bundle --bundler github:spotdemo4/nur#goToDarwinArm64 -o template-darwin-arm64
+
+      - name: Release
+        uses: https://gitea.com/actions/gitea-release-action@fe8e0322804b48e34e3bddbbf6335bd2b1046eb7 # v1
+        with:
+          files: template-darwin-arm64
+
+  windows-amd64:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initialize
+        uses: spotdemo4/nix-init@db355b991de421e07d3c89f9edc18ef8f71394ea # v1.3.0
+
+      - name: Bundle
+        run: nix bundle --bundler github:spotdemo4/nur#goToWindowsAmd64 -o template-windows-amd64.exe
+
+      - name: Release
+        uses: https://gitea.com/actions/gitea-release-action@fe8e0322804b48e34e3bddbbf6335bd2b1046eb7 # v1
+        with:
+          files: template-windows-amd64
+
+  container:
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initialize
+        uses: spotdemo4/nix-init@db355b991de421e07d3c89f9edc18ef8f71394ea # v1.3.0
+
+      - name: Bundle
+        run: nix bundle --bundler github:spotdemo4/nur#toDockerStream -o result
+
+      - name: Release
+        run: |
           mkdir -p /etc/containers
           curl -L -o /etc/containers/policy.json https://raw.githubusercontent.com/containers/image/main/default-policy.json
 
-          ./result | gzip --fast | skopeo copy \
+          ./result \
+          | gzip --fast \
+          | nix shell nixpkgs#skopeo \
+            --inputs-from . \
+            --command skopeo copy \
             --dest-creds=${{ github.actor }}:${{ secrets.USER_TOKEN }} \
             docker-archive:/dev/stdin \
             docker${GITHUB_SERVER_URL#https}/${GITHUB_REPOSITORY@L}:${GITHUB_REF_NAME#v}

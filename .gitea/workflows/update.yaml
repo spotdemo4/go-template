@@ -2,21 +2,18 @@ name: update
 
 on:
   schedule:
-    - cron: "9 9 * * *"
+    - cron: "0 9 * * *" # every day at 09:00 UTC
   workflow_dispatch:
-
-permissions:
-  contents: read
 
 jobs:
   renovate:
     runs-on: ubuntu-latest
     steps:
-      - uses: https://gitea.com/spotdemo4/go-template/.github/actions/init@main
-
-      - uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
+      - name: Initialize
+        uses: spotdemo4/nix-init@448722165938617ea8b814719c33d73122390c9a # v1.2.0
         with:
-          arguments: ".#update"
+          token: ${{ secrets.READ_ONLY_TOKEN }}
+          shell: update
 
       - name: Renovate
         env:
