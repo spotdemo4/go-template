@@ -9,7 +9,29 @@ permissions:
   packages: write
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initialize
+        uses: spotdemo4/nix-init@db355b991de421e07d3c89f9edc18ef8f71394ea # v1.3.0
+
+      - name: Run checks
+        run: nix flake check
+
+  release:
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initialize
+        uses: spotdemo4/nix-init@db355b991de421e07d3c89f9edc18ef8f71394ea # v1.3.0
+
+      - name: Release
+        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
+        with:
+          generate_release_notes: true
+
   linux-amd64:
+    needs: release
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
@@ -24,6 +46,7 @@ jobs:
           files: template-linux-amd64
 
   linux-amd64-deb:
+    needs: release
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
@@ -40,6 +63,7 @@ jobs:
           files: template-linux-amd64.deb
 
   linux-amd64-rpm:
+    needs: release
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
@@ -56,6 +80,7 @@ jobs:
           files: template-linux-amd64.rpm
 
   linux-arm64:
+    needs: release
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
@@ -70,6 +95,7 @@ jobs:
           files: template-linux-arm64
 
   linux-arm:
+    needs: release
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
@@ -84,6 +110,7 @@ jobs:
           files: template-linux-arm
 
   darwin-arm64:
+    needs: release
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
@@ -98,6 +125,7 @@ jobs:
           files: template-darwin-arm64
 
   windows-amd64:
+    needs: release
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
@@ -112,6 +140,7 @@ jobs:
           files: template-windows-amd64
 
   container:
+    needs: check
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
