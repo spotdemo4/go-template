@@ -55,7 +55,7 @@ jobs:
       - name: Bundle
         run: |
           nix bundle --bundler github:NixOS/bundlers#toDEB -o result
-          mv result/*.deb template-linux-amd64.deb
+          cp result/*.deb template-linux-amd64.deb
 
       - name: Release
         uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
@@ -72,7 +72,7 @@ jobs:
       - name: Bundle
         run: |
           nix bundle --bundler github:NixOS/bundlers#toRPM -o result
-          mv result/*.rpm template-linux-amd64.rpm
+          cp result/*.rpm template-linux-amd64.rpm
 
       - name: Release
         uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
