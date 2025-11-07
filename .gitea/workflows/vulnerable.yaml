@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@448722165938617ea8b814719c33d73122390c9a # v1.2.0
+        uses: spotdemo4/nix-init@e1390e3f219f3c3e3d80fce53e946d4b76dace9e # v1.4.0
         with:
           token: ${{ secrets.READ_ONLY_TOKEN }}
           shell: vulnerable
@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@448722165938617ea8b814719c33d73122390c9a # v1.2.0
+        uses: spotdemo4/nix-init@e1390e3f219f3c3e3d80fce53e946d4b76dace9e # v1.4.0
         with:
           token: ${{ secrets.READ_ONLY_TOKEN }}
           shell: vulnerable
