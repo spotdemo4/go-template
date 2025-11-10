@@ -13,10 +13,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@63cc315d93acb3b914827e4ecd6c94d3358986f6 # v1.7.1
+        uses: spotdemo4/nix-init@690fe67ad00aa917e156d970e6dd3c3ef4db33c5 # v1.8.2
 
-      - name: Run checks
+      - name: Check
         run: nix flake check
+
+      - name: Build
+        run: nix build
+
+      - name: Export build
+        run: nix nario export --format 2 --recursive > build.nario
+
+      - name: Upload build
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: build
+          path: build.nario
 
   release:
     needs: check
@@ -32,10 +44,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@63cc315d93acb3b914827e4ecd6c94d3358986f6 # v1.7.1
+        uses: spotdemo4/nix-init@690fe67ad00aa917e156d970e6dd3c3ef4db33c5 # v1.8.2
+
+      - name: Download build
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        with:
+          name: build
+
+      - name: Import build
+        run: nix nario import --no-check-sigs < build.nario
 
       - name: Bundle
-        run: nix bundle --bundler github:spotdemo4/nur#goToLinuxAmd64 -o template-linux-amd64
+        run: |
+          if ! nix bundle --bundler github:spotdemo4/nur#goToLinuxAmd64 -o template-linux-amd64; then
+            nix bundle --bundler github:spotdemo4/nur#goToLinuxAmd64 -o template-linux-amd64
+          fi
 
       - name: Release
         uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
@@ -47,11 +70,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@63cc315d93acb3b914827e4ecd6c94d3358986f6 # v1.7.1
+        uses: spotdemo4/nix-init@690fe67ad00aa917e156d970e6dd3c3ef4db33c5 # v1.8.2
+
+      - name: Download build
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        with:
+          name: build
+
+      - name: Import build
+        run: nix nario import --no-check-sigs < build.nario
 
       - name: Bundle
         run: |
-          nix bundle --bundler github:NixOS/bundlers#toDEB -o result
+          if ! nix bundle --bundler github:NixOS/bundlers#toDEB -o result; then
+            nix bundle --bundler github:NixOS/bundlers#toDEB -o result
+          fi
+
           cp result/*.deb template-linux-amd64.deb
 
       - name: Release
@@ -64,11 +98,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@63cc315d93acb3b914827e4ecd6c94d3358986f6 # v1.7.1
+        uses: spotdemo4/nix-init@690fe67ad00aa917e156d970e6dd3c3ef4db33c5 # v1.8.2
+
+      - name: Download build
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        with:
+          name: build
+
+      - name: Import build
+        run: nix nario import --no-check-sigs < build.nario
 
       - name: Bundle
         run: |
-          nix bundle --bundler github:NixOS/bundlers#toRPM -o result
+          if ! nix bundle --bundler github:NixOS/bundlers#toRPM -o result; then
+            nix bundle --bundler github:NixOS/bundlers#toRPM -o result
+          fi
+
           cp result/*.rpm template-linux-amd64.rpm
 
       - name: Release
@@ -81,10 +126,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@63cc315d93acb3b914827e4ecd6c94d3358986f6 # v1.7.1
+        uses: spotdemo4/nix-init@690fe67ad00aa917e156d970e6dd3c3ef4db33c5 # v1.8.2
 
       - name: Bundle
-        run: nix bundle --bundler github:spotdemo4/nur#goToLinuxArm64 -o template-linux-arm64
+        run: |
+          if ! nix bundle --bundler github:spotdemo4/nur#goToLinuxArm64 -o template-linux-arm64; then
+            nix bundle --bundler github:spotdemo4/nur#goToLinuxArm64 -o template-linux-arm64
+          fi
 
       - name: Release
         uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
@@ -96,10 +144,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@63cc315d93acb3b914827e4ecd6c94d3358986f6 # v1.7.1
+        uses: spotdemo4/nix-init@690fe67ad00aa917e156d970e6dd3c3ef4db33c5 # v1.8.2
 
       - name: Bundle
-        run: nix bundle --bundler github:spotdemo4/nur#goToLinuxArm -o template-linux-arm
+        run: |
+          if ! nix bundle --bundler github:spotdemo4/nur#goToLinuxArm -o template-linux-arm; then
+            nix bundle --bundler github:spotdemo4/nur#goToLinuxArm -o template-linux-arm
+          fi
 
       - name: Release
         uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
@@ -111,10 +162,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@63cc315d93acb3b914827e4ecd6c94d3358986f6 # v1.7.1
+        uses: spotdemo4/nix-init@690fe67ad00aa917e156d970e6dd3c3ef4db33c5 # v1.8.2
 
       - name: Bundle
-        run: nix bundle --bundler github:spotdemo4/nur#goToDarwinArm64 -o template-darwin-arm64
+        run: |
+          if ! nix bundle --bundler github:spotdemo4/nur#goToDarwinArm64 -o template-darwin-arm64; then
+            nix bundle --bundler github:spotdemo4/nur#goToDarwinArm64 -o template-darwin-arm64
+          fi
 
       - name: Release
         uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
@@ -126,10 +180,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@63cc315d93acb3b914827e4ecd6c94d3358986f6 # v1.7.1
+        uses: spotdemo4/nix-init@690fe67ad00aa917e156d970e6dd3c3ef4db33c5 # v1.8.2
 
       - name: Bundle
-        run: nix bundle --bundler github:spotdemo4/nur#goToWindowsAmd64 -o template-windows-amd64.exe
+        run: |
+          if ! nix bundle --bundler github:spotdemo4/nur#goToWindowsAmd64 -o template-windows-amd64.exe; then
+            nix bundle --bundler github:spotdemo4/nur#goToWindowsAmd64 -o template-windows-amd64.exe
+          fi
 
       - name: Release
         uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
@@ -141,10 +198,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@63cc315d93acb3b914827e4ecd6c94d3358986f6 # v1.7.1
+        uses: spotdemo4/nix-init@690fe67ad00aa917e156d970e6dd3c3ef4db33c5 # v1.8.2
+
+      - name: Download build
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        with:
+          name: build
+
+      - name: Import build
+        run: nix nario import --no-check-sigs < build.nario
 
       - name: Bundle
-        run: nix bundle --bundler github:spotdemo4/nur#toDockerStream -o result
+        run: |
+          if ! nix bundle --bundler github:spotdemo4/nur#toDockerStream -o result; then
+            nix bundle --bundler github:spotdemo4/nur#toDockerStream -o result
+          fi
 
       - name: Release
         run: |
