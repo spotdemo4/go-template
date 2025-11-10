@@ -115,8 +115,14 @@
           ];
           script = ''
             prettier --check .
+
+            # github
             action-validator .github/**/*.yaml
             renovate-config-validator .github/renovate.json
+
+            # gitea
+            action-validator .gitea/**/*.yaml
+            renovate-config-validator .gitea/renovate.json
           '';
         };
       };
@@ -124,8 +130,11 @@
       packages.default = pkgs.buildGoModule (finalAttrs: {
         pname = "go-template";
         version = "0.1.5";
-        src = ./.;
-        goSum = ./go.sum;
+        src = builtins.path {
+          name = "root";
+          path = ./.;
+        };
+        goSum = finalAttrs.src + "go.sum";
         vendorHash = null;
         env.CGO_ENABLED = 0;
 
