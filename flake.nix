@@ -139,7 +139,7 @@
         env.CGO_ENABLED = 0;
 
         meta = {
-          description = "template";
+          description = "go template";
           mainProgram = "go-template";
           homepage = "https://github.com/spotdemo4/go-template";
           changelog = "https://github.com/spotdemo4/go-template/releases/tag/v${finalAttrs.version}";
