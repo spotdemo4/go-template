@@ -5,37 +5,58 @@
 
 Template for starting go projects, part of [spotdemo4/templates](https://github.com/spotdemo4/templates)
 
+## Requirements
+
+- [nix](https://nixos.org/) package manager
+- (optional) [direnv](https://direnv.net/)
+
 ## Getting started
 
-```console
-$ ln -s .envrc.project .envrc # create direnv config
-$ direnv allow # allow direnv to create dev environment
+Initialize direnv:
+
+```elm
+ln -s .envrc.project .envrc &&
+direnv allow
+```
+
+or enter the dev shell manually:
+
+```elm
+nix develop
 ```
 
 ## Running
 
-```console
-$ go run . # run once
-$ air # run for each change
+Run once:
+
+```elm
+go run .
+```
+
+or run for each change:
+
+```elm
+air
 ```
 
 ## Building
 
-```console
-$ nix build # build for current system
-$ nix bundle -o template-linux-arm64 --bundler github:spotdemo4/nur#goToLinuxArm64
+```elm
+nix build
 ```
 
 ## Checking
 
-```console
-$ go test ./... # run go tests
-$ nix flake check # run all checks
+```elm
+nix flake check
 ```
 
 ## Releasing
 
-```console
-$ # do nothing, releases are automatically created every day
-$ bumper # manually create a new release
+Releases are automatically created for significant changes.
+
+To manually create a new release:
+
+```elm
+bumper
 ```
