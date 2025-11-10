@@ -92,7 +92,12 @@
           script = ''
             go test ./...
             golangci-lint run ./...
-            opengrep scan --quiet --error --config="${semgrep-rules}/go"
+            opengrep scan \
+              --quiet \
+              --error \
+              --use-git-ignore \
+              --exclude="/vendor/" \
+              --config="${semgrep-rules}/go"
           '';
         };
 
