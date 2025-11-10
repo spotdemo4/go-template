@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 jobs:
-  govulncheck:
+  go:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
@@ -37,5 +37,5 @@ jobs:
         with:
           shell: vulnerable
 
-      - run: octoscan scan .github
-      - run: octoscan scan .gitea
+      - run: octoscan scan --verbose .github
+      - run: octoscan scan --verbose .gitea
