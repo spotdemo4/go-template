@@ -80,7 +80,6 @@
 
             # nix
             flake-checker
-            vulnix
 
             # actions
             octoscan
