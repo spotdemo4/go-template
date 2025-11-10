@@ -23,7 +23,7 @@ $ air # run for each change
 
 ```console
 $ nix build # build for current system
-# nix bundle -o template-linux-arm64 --bundler github:spotdemo4/nur#goToLinuxArm64
+$ nix bundle -o template-linux-arm64 --bundler github:spotdemo4/nur#goToLinuxArm64
 ```
 
 ## Checking
