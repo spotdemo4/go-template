@@ -33,8 +33,11 @@ jobs:
 
       - name: vulnix
         run: |
+          set +e
           nix build -o result
           vuln=$(nix run github:nix-community/vulnix -- --json result)
+          set -e
+
           results=$(echo $vuln | jq -r '.[] | select(any(.cvssv3_basescore[]; . > 4)) | . as $item | .cvssv3_basescore | to_entries[] | select(.value > 4) | "**Package:** \($item.name)  \n**CVE:** \(.key)  \n**Score:** \(.value)  \n**Description:** \($item.description[.key])\n\n---\n"')
 
           # Print to terminal
