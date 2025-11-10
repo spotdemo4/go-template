@@ -66,6 +66,9 @@
         update = pkgs.mkShell {
           packages = with pkgs; [
             renovate
+
+            # go mod vendor
+            go
           ];
         };
 
