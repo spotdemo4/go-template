@@ -1,5 +1,41 @@
 # go-template
 
-[![check](https://img.shields.io/github/actions/workflow/status/spotdemo4/go-template/check.yaml?branch=main&logo=nixos&logoColor=%2389dceb&label=check&labelColor=%2311111b)](https://github.com/spotdemo4/go-template/actions/workflows/check.yaml)
-[![vulnerable](https://img.shields.io/github/actions/workflow/status/spotdemo4/go-template/vulnerable.yaml?branch=main&label=vulnerable&labelColor=%2311111b)](https://github.com/spotdemo4/go-template/actions/workflows/vulnerable.yaml)
-[![release](https://img.shields.io/github/v/release/spotdemo4/go-template?logo=github&logoColor=%23cdd6f4&labelColor=%2311111b&color=%23313244)](https://github.com/spotdemo4/go-template/releases/latest)
+![check](https://github.com/spotdemo4/go-template/actions/workflows/check.yaml/badge.svg)
+![vulnerable](https://github.com/spotdemo4/go-template/actions/workflows/vulnerable.yaml/badge.svg)
+
+Template for starting go projects, part of [spotdemo4/templates](https://github.com/spotdemo4/templates)
+
+## Getting started
+
+```console
+$ ln -s .envrc.project .envrc # create direnv config
+$ direnv allow # allow direnv to create dev environment
+```
+
+## Running
+
+```console
+$ go run . # run once
+$ air # run for each change
+```
+
+## Building
+
+```console
+$ nix build # build for current system
+# nix bundle -o template-linux-arm64 --bundler github:spotdemo4/nur#goToLinuxArm64
+```
+
+## Checking
+
+```console
+$ go test ./... # run go tests
+$ nix flake check # run all checks
+```
+
+## Releasing
+
+```console
+$ # do nothing, releases are automatically created for significant changes
+$ bumper # manually create a new release
+```
