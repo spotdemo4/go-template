@@ -1,5 +1,9 @@
 {
   "editor.formatOnSave": true,
+  "files.associations": {
+    "renovate.json": "jsonc",
+    ".envrc.project": "shellscript"
+  },
 
   // go
   "go.lintTool": "golangci-lint-v2",
@@ -29,10 +33,5 @@
   },
 
   // actions
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "files.associations": {
-    ".semgrepignore": "ignore",
-    "renovate.json": "jsonc",
-    ".envrc.project": "shellscript"
-  }
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }
