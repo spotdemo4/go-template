@@ -1,4 +1,4 @@
-# go-template
+# go template
 
 ![check](https://github.com/spotdemo4/go-template/actions/workflows/check.yaml/badge.svg)
 ![vulnerable](https://github.com/spotdemo4/go-template/actions/workflows/vulnerable.yaml/badge.svg)
