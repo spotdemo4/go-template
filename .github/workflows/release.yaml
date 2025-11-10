@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@b1a572723d705a405747541fad38545a57f03ee3 # v1.7.0
+        uses: spotdemo4/nix-init@63cc315d93acb3b914827e4ecd6c94d3358986f6 # v1.7.1
 
       - name: Run checks
         run: nix flake check
@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Release
-        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
+        uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
         with:
           generate_release_notes: true
 
@@ -32,13 +32,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@b1a572723d705a405747541fad38545a57f03ee3 # v1.7.0
+        uses: spotdemo4/nix-init@63cc315d93acb3b914827e4ecd6c94d3358986f6 # v1.7.1
 
       - name: Bundle
         run: nix bundle --bundler github:spotdemo4/nur#goToLinuxAmd64 -o template-linux-amd64
 
       - name: Release
-        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
+        uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
         with:
           files: template-linux-amd64
 
@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@b1a572723d705a405747541fad38545a57f03ee3 # v1.7.0
+        uses: spotdemo4/nix-init@63cc315d93acb3b914827e4ecd6c94d3358986f6 # v1.7.1
 
       - name: Bundle
         run: |
@@ -55,7 +55,7 @@ jobs:
           cp result/*.deb template-linux-amd64.deb
 
       - name: Release
-        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
+        uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
         with:
           files: template-linux-amd64.deb
 
@@ -64,7 +64,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@b1a572723d705a405747541fad38545a57f03ee3 # v1.7.0
+        uses: spotdemo4/nix-init@63cc315d93acb3b914827e4ecd6c94d3358986f6 # v1.7.1
 
       - name: Bundle
         run: |
@@ -72,7 +72,7 @@ jobs:
           cp result/*.rpm template-linux-amd64.rpm
 
       - name: Release
-        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
+        uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
         with:
           files: template-linux-amd64.rpm
 
@@ -81,13 +81,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@b1a572723d705a405747541fad38545a57f03ee3 # v1.7.0
+        uses: spotdemo4/nix-init@63cc315d93acb3b914827e4ecd6c94d3358986f6 # v1.7.1
 
       - name: Bundle
         run: nix bundle --bundler github:spotdemo4/nur#goToLinuxArm64 -o template-linux-arm64
 
       - name: Release
-        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
+        uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
         with:
           files: template-linux-arm64
 
@@ -96,13 +96,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@b1a572723d705a405747541fad38545a57f03ee3 # v1.7.0
+        uses: spotdemo4/nix-init@63cc315d93acb3b914827e4ecd6c94d3358986f6 # v1.7.1
 
       - name: Bundle
         run: nix bundle --bundler github:spotdemo4/nur#goToLinuxArm -o template-linux-arm
 
       - name: Release
-        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
+        uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
         with:
           files: template-linux-arm
 
@@ -111,13 +111,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@b1a572723d705a405747541fad38545a57f03ee3 # v1.7.0
+        uses: spotdemo4/nix-init@63cc315d93acb3b914827e4ecd6c94d3358986f6 # v1.7.1
 
       - name: Bundle
         run: nix bundle --bundler github:spotdemo4/nur#goToDarwinArm64 -o template-darwin-arm64
 
       - name: Release
-        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
+        uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
         with:
           files: template-darwin-arm64
 
@@ -126,13 +126,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@b1a572723d705a405747541fad38545a57f03ee3 # v1.7.0
+        uses: spotdemo4/nix-init@63cc315d93acb3b914827e4ecd6c94d3358986f6 # v1.7.1
 
       - name: Bundle
         run: nix bundle --bundler github:spotdemo4/nur#goToWindowsAmd64 -o template-windows-amd64.exe
 
       - name: Release
-        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
+        uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
         with:
           files: template-windows-amd64
 
@@ -141,7 +141,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@b1a572723d705a405747541fad38545a57f03ee3 # v1.7.0
+        uses: spotdemo4/nix-init@63cc315d93acb3b914827e4ecd6c94d3358986f6 # v1.7.1
 
       - name: Bundle
         run: nix bundle --bundler github:spotdemo4/nur#toDockerStream -o result
