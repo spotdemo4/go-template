@@ -19,7 +19,7 @@ jobs:
 
       - run: govulncheck ./...
 
-  flake:
+  nix:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
