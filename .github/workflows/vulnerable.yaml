@@ -17,7 +17,8 @@ jobs:
         with:
           shell: vulnerable
 
-      - run: govulncheck ./...
+      - name: govulncheck
+        run: govulncheck ./...
 
   nix:
     runs-on: ubuntu-latest
@@ -27,7 +28,28 @@ jobs:
         with:
           shell: vulnerable
 
-      - run: flake-checker -f
+      - name: flake-checker
+        run: flake-checker -f
+
+      - name: vulnix
+        run: |
+          nix build -o result
+          vuln=$(vulnix --json result)
+          results=$(echo $vuln | jq -r '.[] | select(any(.cvssv3_basescore[]; . > 4)) | . as $item | .cvssv3_basescore | to_entries[] | select(.value > 4) | "**Package:** \($item.name)  \n**CVE:** \(.key)  \n**Score:** \(.value)  \n**Description:** \($item.description[.key])\n\n---\n"')
+
+          # Print to terminal
+          echo "## High Severity CVEs (Score > 7)"
+          echo ""
+          echo "$results"
+
+          # Also write to GitHub Actions summary if available
+          if [ -n "$GITHUB_STEP_SUMMARY" ]; then
+            {
+              echo "## High Severity CVEs (Score > 7)"
+              echo ""
+              echo "$results"
+            } >> $GITHUB_STEP_SUMMARY
+          fi
 
   actions:
     runs-on: ubuntu-latest
@@ -37,5 +59,7 @@ jobs:
         with:
           shell: vulnerable
 
-      - run: octoscan scan --verbose .github
-      - run: octoscan scan --verbose .gitea
+      - name: octoscan
+        run: |
+          octoscan scan --verbose .github
+          octoscan scan --verbose .gitea
