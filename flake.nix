@@ -42,7 +42,7 @@
           nur.overlays.libs
         ];
       };
-    in {
+    in rec {
       devShells = {
         default = pkgs.mkShell {
           packages = with pkgs; [
@@ -83,9 +83,8 @@
 
       checks = pkgs.lib.mkChecks {
         go = {
-          src = ./.;
+          src = packages.default;
           deps = with pkgs; [
-            go
             golangci-lint
             opengrep
           ];
