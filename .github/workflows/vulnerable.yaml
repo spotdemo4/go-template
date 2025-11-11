@@ -31,35 +31,44 @@ jobs:
       - name: flake-checker
         run: flake-checker -f
 
+      - name: build
+        run: nix build -o result
+
       - name: vulnix
-        run: |
-          set +e
-          nix build -o result
-          vuln=$(nix run github:nix-community/vulnix -- --json result)
-          echo "${vuln}"
-          set -e
+        uses: spotdemo4/vulnix-action@main
+        with:
+          path: result
+          score: 7
 
-          results=$(echo "${vuln}" | jq -r '.[] | select(any(.cvssv3_basescore[]; . > 7)) | . as $item | .cvssv3_basescore | to_entries[] | select(.value > 7) | "**Package:** \($item.name)  \n**CVE:** \(.key)  \n**Score:** \(.value)  \n**Description:** \($item.description[.key])\n\n---\n"')
-          if [ -z "${results}" ]; then
-            echo "No vulnerabilities with CVSSv3 score > 7 found."
-            exit 0
-          fi
+      # - name: vulnix
+      #   run: |
+      #     set +e
+      #     nix build -o result
+      #     vuln=$(nix run github:nix-community/vulnix -- --json result)
+      #     echo "${vuln}"
+      #     set -e
 
-          # Print to terminal
-          echo "## High Severity CVEs (Score > 7)"
-          echo ""
-          echo "${results}"
+      #     results=$(echo "${vuln}" | jq -r '.[] | select(any(.cvssv3_basescore[]; . > 7)) | . as $item | .cvssv3_basescore | to_entries[] | select(.value > 7) | "**Package:** \($item.name)  \n**CVE:** \(.key)  \n**Score:** \(.value)  \n**Description:** \($item.description[.key])\n\n---\n"')
+      #     if [ -z "${results}" ]; then
+      #       echo "No vulnerabilities with CVSSv3 score > 7 found."
+      #       exit 0
+      #     fi
 
-          # Also write to GitHub Actions summary if available
-          if [ -n "$GITHUB_STEP_SUMMARY" ]; then
-            {
-              echo "## <img src="https://brand.nixos.org/internals/nixos-logomark-default-gradient-none.svg" alt="NixOS" width="20"> High Severity CVEs"
-              echo ""
-              echo "${results}"
-            } >> $GITHUB_STEP_SUMMARY
-          fi
+      #     # Print to terminal
+      #     echo "## High Severity CVEs (Score > 7)"
+      #     echo ""
+      #     echo "${results}"
 
-          exit 1
+      #     # Also write to GitHub Actions summary if available
+      #     if [ -n "$GITHUB_STEP_SUMMARY" ]; then
+      #       {
+      #         echo "## <img src="https://brand.nixos.org/internals/nixos-logomark-default-gradient-none.svg" alt="NixOS" width="20"> High Severity CVEs"
+      #         echo ""
+      #         echo "${results}"
+      #       } >> $GITHUB_STEP_SUMMARY
+      #     fi
+
+      #     exit 1
 
   actions:
     runs-on: ubuntu-latest
