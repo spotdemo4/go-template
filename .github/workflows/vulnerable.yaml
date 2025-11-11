@@ -35,40 +35,10 @@ jobs:
         run: nix build -o result
 
       - name: vulnix
-        uses: spotdemo4/vulnix-action@main
+        uses: spotdemo4/vulnix-action@72edfb463438dec5a794bfc1bc91d4f762bd798b # v1.0.0
         with:
           path: result
           score: 7
-
-      # - name: vulnix
-      #   run: |
-      #     set +e
-      #     nix build -o result
-      #     vuln=$(nix run github:nix-community/vulnix -- --json result)
-      #     echo "${vuln}"
-      #     set -e
-
-      #     results=$(echo "${vuln}" | jq -r '.[] | select(any(.cvssv3_basescore[]; . > 7)) | . as $item | .cvssv3_basescore | to_entries[] | select(.value > 7) | "**Package:** \($item.name)  \n**CVE:** \(.key)  \n**Score:** \(.value)  \n**Description:** \($item.description[.key])\n\n---\n"')
-      #     if [ -z "${results}" ]; then
-      #       echo "No vulnerabilities with CVSSv3 score > 7 found."
-      #       exit 0
-      #     fi
-
-      #     # Print to terminal
-      #     echo "## High Severity CVEs (Score > 7)"
-      #     echo ""
-      #     echo "${results}"
-
-      #     # Also write to GitHub Actions summary if available
-      #     if [ -n "$GITHUB_STEP_SUMMARY" ]; then
-      #       {
-      #         echo "## <img src="https://brand.nixos.org/internals/nixos-logomark-default-gradient-none.svg" alt="NixOS" width="20"> High Severity CVEs"
-      #         echo ""
-      #         echo "${results}"
-      #       } >> $GITHUB_STEP_SUMMARY
-      #     fi
-
-      #     exit 1
 
   actions:
     runs-on: ubuntu-latest
