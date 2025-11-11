@@ -24,14 +24,19 @@
       "automerge": true
     },
     {
-      "groupName": "Nix Inputs",
+      "groupName": "nix inputs",
       "matchManagers": ["nix"],
       "matchPackageNames": ["*"]
     },
     {
-      "groupName": "GitHub Actions",
+      "groupName": "github actions",
       "matchManagers": ["github-actions"],
       "matchPackageNames": ["*"]
+    },
+    {
+      "groupName": "go modules",
+      "matchManagers": ["gomod"],
+      "matchUpdateTypes": ["patch", "pin", "digest"]
     }
   ]
 }
