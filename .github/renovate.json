@@ -20,8 +20,8 @@
   },
   "packageRules": [
     {
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "automerge": true
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"]
     },
     {
       "groupName": "nix inputs",
