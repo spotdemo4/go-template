@@ -112,7 +112,7 @@
             alejandra
           ];
           script = ''
-            alejandra -c .
+            alejandra -q -c flake.nix
           '';
         };
 
