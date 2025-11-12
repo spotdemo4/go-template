@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@690fe67ad00aa917e156d970e6dd3c3ef4db33c5 # v1.8.2
+        uses: spotdemo4/nix-init@2109e877d5ff4cd827944b51781cc6b1eac88a47 # v1.8.3
 
       - name: Check
         run: nix flake check
@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@690fe67ad00aa917e156d970e6dd3c3ef4db33c5 # v1.8.2
+        uses: spotdemo4/nix-init@2109e877d5ff4cd827944b51781cc6b1eac88a47 # v1.8.3
 
       - name: Download build
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
@@ -70,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@690fe67ad00aa917e156d970e6dd3c3ef4db33c5 # v1.8.2
+        uses: spotdemo4/nix-init@2109e877d5ff4cd827944b51781cc6b1eac88a47 # v1.8.3
 
       - name: Download build
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
@@ -98,7 +98,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@690fe67ad00aa917e156d970e6dd3c3ef4db33c5 # v1.8.2
+        uses: spotdemo4/nix-init@2109e877d5ff4cd827944b51781cc6b1eac88a47 # v1.8.3
 
       - name: Download build
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
@@ -126,7 +126,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@690fe67ad00aa917e156d970e6dd3c3ef4db33c5 # v1.8.2
+        uses: spotdemo4/nix-init@2109e877d5ff4cd827944b51781cc6b1eac88a47 # v1.8.3
 
       - name: Bundle
         run: |
@@ -144,7 +144,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@690fe67ad00aa917e156d970e6dd3c3ef4db33c5 # v1.8.2
+        uses: spotdemo4/nix-init@2109e877d5ff4cd827944b51781cc6b1eac88a47 # v1.8.3
 
       - name: Bundle
         run: |
@@ -162,7 +162,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@690fe67ad00aa917e156d970e6dd3c3ef4db33c5 # v1.8.2
+        uses: spotdemo4/nix-init@2109e877d5ff4cd827944b51781cc6b1eac88a47 # v1.8.3
 
       - name: Bundle
         run: |
@@ -180,7 +180,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@690fe67ad00aa917e156d970e6dd3c3ef4db33c5 # v1.8.2
+        uses: spotdemo4/nix-init@2109e877d5ff4cd827944b51781cc6b1eac88a47 # v1.8.3
 
       - name: Bundle
         run: |
@@ -198,7 +198,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@690fe67ad00aa917e156d970e6dd3c3ef4db33c5 # v1.8.2
+        uses: spotdemo4/nix-init@2109e877d5ff4cd827944b51781cc6b1eac88a47 # v1.8.3
 
       - name: Download build
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
