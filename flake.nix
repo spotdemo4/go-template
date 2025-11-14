@@ -17,7 +17,7 @@
       url = "github:numtide/flake-utils";
       inputs.systems.follows = "systems";
     };
-    nur = {
+    trev = {
       url = "github:spotdemo4/nur";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -30,7 +30,7 @@
   outputs = {
     nixpkgs,
     utils,
-    nur,
+    trev,
     semgrep-rules,
     ...
   }:
@@ -38,8 +38,8 @@
       pkgs = import nixpkgs {
         inherit system;
         overlays = [
-          nur.overlays.packages
-          nur.overlays.libs
+          trev.overlays.packages
+          trev.overlays.libs
         ];
       };
     in rec {
