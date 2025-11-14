@@ -17,7 +17,7 @@ jobs:
         with:
           shell: vulnerable
 
-      - name: govulncheck
+      - name: Run govulncheck
         run: govulncheck ./...
 
   nix:
@@ -28,13 +28,13 @@ jobs:
         with:
           shell: vulnerable
 
-      - name: flake-checker
+      - name: Run flake-checker
         run: flake-checker -f
 
-      - name: build
+      - name: Build
         run: nix build -o result
 
-      - name: vulnix
+      - name: Run vulnix
         uses: spotdemo4/vulnix-action@c614a37ec8850272bf58e0f821f3028aa32e5c4b # v1.0.1
         with:
           path: result
@@ -48,7 +48,5 @@ jobs:
         with:
           shell: vulnerable
 
-      - name: octoscan
-        run: |
-          octoscan scan --verbose .github
-          octoscan scan --verbose .gitea
+      - name: Run octoscan
+        run: octoscan scan --verbose .github

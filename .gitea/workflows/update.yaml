@@ -12,7 +12,6 @@ jobs:
       - name: Initialize
         uses: spotdemo4/nix-init@ebb74f1642446e78bfeb82da93c87792f8ef81c3 # v1.8.5
         with:
-          token: ${{ secrets.READ_ONLY_TOKEN }}
           shell: update
 
       - name: Renovate

@@ -55,10 +55,7 @@ jobs:
         run: nix nario import --no-check-sigs < build.nario
 
       - name: Bundle
-        run: |
-          if ! nix bundle --bundler github:spotdemo4/nur#goToLinuxAmd64 -o template-linux-amd64; then
-            nix bundle --bundler github:spotdemo4/nur#goToLinuxAmd64 -o template-linux-amd64
-          fi
+        run: nix bundle --bundler github:spotdemo4/nur#goToLinuxAmd64 -o template-linux-amd64
 
       - name: Release
         uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
@@ -82,10 +79,7 @@ jobs:
 
       - name: Bundle
         run: |
-          if ! nix bundle --bundler github:NixOS/bundlers#toDEB -o result; then
-            nix bundle --bundler github:NixOS/bundlers#toDEB -o result
-          fi
-
+          nix bundle --bundler github:NixOS/bundlers#toDEB -o result
           cp result/*.deb template-linux-amd64.deb
 
       - name: Release
@@ -110,10 +104,7 @@ jobs:
 
       - name: Bundle
         run: |
-          if ! nix bundle --bundler github:NixOS/bundlers#toRPM -o result; then
-            nix bundle --bundler github:NixOS/bundlers#toRPM -o result
-          fi
-
+          nix bundle --bundler github:NixOS/bundlers#toRPM -o result
           cp result/*.rpm template-linux-amd64.rpm
 
       - name: Release
@@ -129,10 +120,7 @@ jobs:
         uses: spotdemo4/nix-init@ebb74f1642446e78bfeb82da93c87792f8ef81c3 # v1.8.5
 
       - name: Bundle
-        run: |
-          if ! nix bundle --bundler github:spotdemo4/nur#goToLinuxArm64 -o template-linux-arm64; then
-            nix bundle --bundler github:spotdemo4/nur#goToLinuxArm64 -o template-linux-arm64
-          fi
+        run: nix bundle --bundler github:spotdemo4/nur#goToLinuxArm64 -o template-linux-arm64
 
       - name: Release
         uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
@@ -147,10 +135,7 @@ jobs:
         uses: spotdemo4/nix-init@ebb74f1642446e78bfeb82da93c87792f8ef81c3 # v1.8.5
 
       - name: Bundle
-        run: |
-          if ! nix bundle --bundler github:spotdemo4/nur#goToLinuxArm -o template-linux-arm; then
-            nix bundle --bundler github:spotdemo4/nur#goToLinuxArm -o template-linux-arm
-          fi
+        run: nix bundle --bundler github:spotdemo4/nur#goToLinuxArm -o template-linux-arm
 
       - name: Release
         uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
@@ -165,10 +150,7 @@ jobs:
         uses: spotdemo4/nix-init@ebb74f1642446e78bfeb82da93c87792f8ef81c3 # v1.8.5
 
       - name: Bundle
-        run: |
-          if ! nix bundle --bundler github:spotdemo4/nur#goToDarwinArm64 -o template-darwin-arm64; then
-            nix bundle --bundler github:spotdemo4/nur#goToDarwinArm64 -o template-darwin-arm64
-          fi
+        run: nix bundle --bundler github:spotdemo4/nur#goToDarwinArm64 -o template-darwin-arm64
 
       - name: Release
         uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
@@ -183,10 +165,7 @@ jobs:
         uses: spotdemo4/nix-init@ebb74f1642446e78bfeb82da93c87792f8ef81c3 # v1.8.5
 
       - name: Bundle
-        run: |
-          if ! nix bundle --bundler github:spotdemo4/nur#goToWindowsAmd64 -o template-windows-amd64.exe; then
-            nix bundle --bundler github:spotdemo4/nur#goToWindowsAmd64 -o template-windows-amd64.exe
-          fi
+        run: nix bundle --bundler github:spotdemo4/nur#goToWindowsAmd64 -o template-windows-amd64.exe
 
       - name: Release
         uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
@@ -209,10 +188,7 @@ jobs:
         run: nix nario import --no-check-sigs < build.nario
 
       - name: Bundle
-        run: |
-          if ! nix bundle --bundler github:spotdemo4/nur#toDockerStream -o result; then
-            nix bundle --bundler github:spotdemo4/nur#toDockerStream -o result
-          fi
+        run: nix bundle --bundler github:spotdemo4/nur#toDockerStream -o result
 
       - name: Release
         run: >

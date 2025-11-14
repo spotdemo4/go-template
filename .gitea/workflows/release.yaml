@@ -11,8 +11,20 @@ jobs:
       - name: Initialize
         uses: spotdemo4/nix-init@ebb74f1642446e78bfeb82da93c87792f8ef81c3 # v1.8.5
 
-      - name: Run checks
+      - name: Check
         run: nix flake check
+
+      - name: Build
+        run: nix build
+
+      - name: Export build
+        run: nix nario export --format 2 --recursive > build.nario
+
+      - name: Upload build
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: build
+          path: build.nario
 
   release:
     needs: check
@@ -28,6 +40,14 @@ jobs:
       - name: Initialize
         uses: spotdemo4/nix-init@ebb74f1642446e78bfeb82da93c87792f8ef81c3 # v1.8.5
 
+      - name: Download build
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        with:
+          name: build
+
+      - name: Import build
+        run: nix nario import --no-check-sigs < build.nario
+
       - name: Bundle
         run: nix bundle --bundler github:spotdemo4/nur#goToLinuxAmd64 -o template-linux-amd64
 
@@ -42,6 +62,14 @@ jobs:
     steps:
       - name: Initialize
         uses: spotdemo4/nix-init@ebb74f1642446e78bfeb82da93c87792f8ef81c3 # v1.8.5
+
+      - name: Download build
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        with:
+          name: build
+
+      - name: Import build
+        run: nix nario import --no-check-sigs < build.nario
 
       - name: Bundle
         run: |
@@ -59,6 +87,14 @@ jobs:
     steps:
       - name: Initialize
         uses: spotdemo4/nix-init@ebb74f1642446e78bfeb82da93c87792f8ef81c3 # v1.8.5
+
+      - name: Download build
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        with:
+          name: build
+
+      - name: Import build
+        run: nix nario import --no-check-sigs < build.nario
 
       - name: Bundle
         run: |

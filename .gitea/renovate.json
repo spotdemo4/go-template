@@ -21,18 +21,21 @@
   },
   "packageRules": [
     {
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "automerge": true
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"]
     },
     {
-      "groupName": "Nix Inputs",
-      "matchManagers": ["nix"],
-      "matchPackageNames": ["*"]
+      "groupName": "nix inputs",
+      "matchManagers": ["nix"]
     },
     {
-      "groupName": "GitHub Actions",
-      "matchManagers": ["github-actions"],
-      "matchPackageNames": ["*"]
+      "groupName": "github actions",
+      "matchManagers": ["github-actions"]
+    },
+    {
+      "groupName": "go modules",
+      "matchManagers": ["gomod"],
+      "matchUpdateTypes": ["patch", "pin", "digest"]
     }
   ]
 }
