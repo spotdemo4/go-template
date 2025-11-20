@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@01a22e674b142706b2d3bd2ed1967746c760328c # v1.8.10
+        uses: spotdemo4/nix-init@050b8d7887f729841b2d104d745c642f2cf5c951 # v1.8.11
 
       - name: Check
         run: nix flake check
@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@01a22e674b142706b2d3bd2ed1967746c760328c # v1.8.10
+        uses: spotdemo4/nix-init@050b8d7887f729841b2d104d745c642f2cf5c951 # v1.8.11
 
       - name: Download build
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
@@ -61,7 +61,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@01a22e674b142706b2d3bd2ed1967746c760328c # v1.8.10
+        uses: spotdemo4/nix-init@050b8d7887f729841b2d104d745c642f2cf5c951 # v1.8.11
 
       - name: Download build
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
@@ -86,7 +86,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@01a22e674b142706b2d3bd2ed1967746c760328c # v1.8.10
+        uses: spotdemo4/nix-init@050b8d7887f729841b2d104d745c642f2cf5c951 # v1.8.11
 
       - name: Download build
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
@@ -111,7 +111,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@01a22e674b142706b2d3bd2ed1967746c760328c # v1.8.10
+        uses: spotdemo4/nix-init@050b8d7887f729841b2d104d745c642f2cf5c951 # v1.8.11
 
       - name: Bundle
         run: nix bundle --bundler github:spotdemo4/nur#goToLinuxArm64 -o template-linux-arm64
@@ -126,7 +126,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@01a22e674b142706b2d3bd2ed1967746c760328c # v1.8.10
+        uses: spotdemo4/nix-init@050b8d7887f729841b2d104d745c642f2cf5c951 # v1.8.11
 
       - name: Bundle
         run: nix bundle --bundler github:spotdemo4/nur#goToLinuxArm -o template-linux-arm
@@ -141,7 +141,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@01a22e674b142706b2d3bd2ed1967746c760328c # v1.8.10
+        uses: spotdemo4/nix-init@050b8d7887f729841b2d104d745c642f2cf5c951 # v1.8.11
 
       - name: Bundle
         run: nix bundle --bundler github:spotdemo4/nur#goToDarwinArm64 -o template-darwin-arm64
@@ -156,7 +156,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@01a22e674b142706b2d3bd2ed1967746c760328c # v1.8.10
+        uses: spotdemo4/nix-init@050b8d7887f729841b2d104d745c642f2cf5c951 # v1.8.11
 
       - name: Bundle
         run: nix bundle --bundler github:spotdemo4/nur#goToWindowsAmd64 -o template-windows-amd64.exe
@@ -171,7 +171,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@01a22e674b142706b2d3bd2ed1967746c760328c # v1.8.10
+        uses: spotdemo4/nix-init@050b8d7887f729841b2d104d745c642f2cf5c951 # v1.8.11
 
       - name: Bundle
         run: nix bundle --bundler github:spotdemo4/nur#toDockerStream -o result
