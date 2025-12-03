@@ -74,7 +74,7 @@ docker run ghcr.io/spotdemo4/go-template:0.1.7
 ### Action
 
 ```yaml
-- name: node-template
+- name: go template
   uses: docker://ghcr.io/spotdemo4/go-template:0.1.7
 ```
 
