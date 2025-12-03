@@ -61,6 +61,7 @@ bumper
 | ------- | ------------ | ------------------------------------------------------------------------------------------------------------------- |
 | Linux   | x86_64       | [tar.xz](https://github.com/spotdemo4/go-template/releases/download/v0.1.7/go-template-0.1.7-x86_64-linux.tar.xz)   |
 | Linux   | aarch64      | [tar.xz](https://github.com/spotdemo4/go-template/releases/download/v0.1.7/go-template-0.1.7-aarch64-linux.tar.xz)  |
+| Linux   | arm          | [tar.xz](https://github.com/spotdemo4/go-template/releases/download/v0.1.7/go-template-0.1.7-arm-linux.tar.xz)      |
 | MacOS   | aarch64      | [tar.xz](https://github.com/spotdemo4/go-template/releases/download/v0.1.7/go-template-0.1.7-aarch64-darwin.tar.xz) |
 | Windows | x86_64       | [zip](https://github.com/spotdemo4/go-template/releases/download/v0.1.7/go-template-0.1.7-x86_64-windows.zip)       |
 
