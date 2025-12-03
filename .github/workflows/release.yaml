@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Initialize
         uses: spotdemo4/nix-init@a4440ed9daa3faedcfc8cd491dbcfa5e38d84156 # v1.8.14
@@ -18,185 +18,94 @@ jobs:
       - name: Check
         run: nix flake check
 
-      - name: Build
-        run: nix build
-
-      - name: Export build
-        run: nix nario export --format 2 --recursive > build.nario
-
-      - name: Upload build
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
-        with:
-          name: build
-          path: build.nario
-
-  release:
-    needs: check
-    runs-on: ubuntu-latest
-    steps:
       - name: Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           generate_release_notes: true
 
-  linux-amd64:
-    needs: release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Initialize
-        uses: spotdemo4/nix-init@a4440ed9daa3faedcfc8cd491dbcfa5e38d84156 # v1.8.14
-
-      - name: Download build
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
-        with:
-          name: build
-
-      - name: Import build
-        run: nix nario import --no-check-sigs < build.nario
-
-      - name: Bundle
-        run: nix bundle --bundler github:spotdemo4/nur#goToLinuxAmd64 -o template-linux-amd64
-
-      - name: Release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
-        with:
-          files: template-linux-amd64
-
-  linux-amd64-deb:
-    needs: release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Initialize
-        uses: spotdemo4/nix-init@a4440ed9daa3faedcfc8cd491dbcfa5e38d84156 # v1.8.14
-
-      - name: Download build
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
-        with:
-          name: build
-
-      - name: Import build
-        run: nix nario import --no-check-sigs < build.nario
-
-      - name: Bundle
-        run: |
-          nix bundle --bundler github:NixOS/bundlers#toDEB -o result
-          cp result/*.deb template-linux-amd64.deb
-
-      - name: Release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
-        with:
-          files: template-linux-amd64.deb
-
-  linux-amd64-rpm:
-    needs: release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Initialize
-        uses: spotdemo4/nix-init@a4440ed9daa3faedcfc8cd491dbcfa5e38d84156 # v1.8.14
-
-      - name: Download build
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
-        with:
-          name: build
-
-      - name: Import build
-        run: nix nario import --no-check-sigs < build.nario
-
-      - name: Bundle
-        run: |
-          nix bundle --bundler github:NixOS/bundlers#toRPM -o result
-          cp result/*.rpm template-linux-amd64.rpm
-
-      - name: Release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
-        with:
-          files: template-linux-amd64.rpm
-
-  linux-arm64:
-    needs: release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Initialize
-        uses: spotdemo4/nix-init@a4440ed9daa3faedcfc8cd491dbcfa5e38d84156 # v1.8.14
-
-      - name: Bundle
-        run: nix bundle --bundler github:spotdemo4/nur#goToLinuxArm64 -o template-linux-arm64
-
-      - name: Release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
-        with:
-          files: template-linux-arm64
-
-  linux-arm:
-    needs: release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Initialize
-        uses: spotdemo4/nix-init@a4440ed9daa3faedcfc8cd491dbcfa5e38d84156 # v1.8.14
-
-      - name: Bundle
-        run: nix bundle --bundler github:spotdemo4/nur#goToLinuxArm -o template-linux-arm
-
-      - name: Release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
-        with:
-          files: template-linux-arm
-
-  darwin-arm64:
-    needs: release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Initialize
-        uses: spotdemo4/nix-init@a4440ed9daa3faedcfc8cd491dbcfa5e38d84156 # v1.8.14
-
-      - name: Bundle
-        run: nix bundle --bundler github:spotdemo4/nur#goToDarwinArm64 -o template-darwin-arm64
-
-      - name: Release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
-        with:
-          files: template-darwin-arm64
-
-  windows-amd64:
-    needs: release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Initialize
-        uses: spotdemo4/nix-init@a4440ed9daa3faedcfc8cd491dbcfa5e38d84156 # v1.8.14
-
-      - name: Bundle
-        run: nix bundle --bundler github:spotdemo4/nur#goToWindowsAmd64 -o template-windows-amd64.exe
-
-      - name: Release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
-        with:
-          files: template-windows-amd64
-
-  container:
+  binary:
     needs: check
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [x86_64-windows, x86_64-linux, aarch64-linux, aarch64-darwin]
+    runs-on: ubuntu-24.04
     steps:
       - name: Initialize
+        id: init
         uses: spotdemo4/nix-init@a4440ed9daa3faedcfc8cd491dbcfa5e38d84156 # v1.8.14
 
-      - name: Download build
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
-        with:
-          name: build
-
-      - name: Import build
-        run: nix nario import --no-check-sigs < build.nario
-
       - name: Bundle
-        run: nix bundle --bundler github:spotdemo4/nur#toDockerStream -o result
+        run: nix bundle --bundler github:spotdemo4/nur#go-${{ matrix.target }} -o bundle
+
+      - if: matrix.target != 'x86_64-windows'
+        name: Package (tar.xz)
+        run: tar -cJhf "go-template-${GITHUB_REF_NAME#v}-${{ matrix.target }}.tar.xz" bundle
+
+      - if: matrix.target == 'x86_64-windows'
+        name: Package (zip)
+        run: zip -r "go-template-${GITHUB_REF_NAME#v}-${{ matrix.target }}.zip" bundle
 
       - name: Release
-        run: >
-          ./result |
-          gzip --fast |
-          nix shell nixpkgs#skopeo
-          --inputs-from .
-          --command skopeo copy
-          --dest-creds=${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}
-          docker-archive:/dev/stdin
-          docker://ghcr.io/${{ github.repository }}:${GITHUB_REF_NAME#v}
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+        with:
+          files: go-template-*-${{ matrix.target }}.*
+
+  image:
+    needs: check
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-15]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Initialize
+        id: init
+        uses: spotdemo4/nix-init@a4440ed9daa3faedcfc8cd491dbcfa5e38d84156 # v1.8.14
+        with:
+          shell: release
+
+      - name: Bundle
+        run: nix bundle --bundler github:spotdemo4/nur#docker-stream -o result
+
+      - name: Release
+        run: |
+          ./result | gzip --fast | skopeo --insecure-policy copy \
+            --dest-creds=${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} \
+            docker-archive:/dev/stdin \
+            "docker://ghcr.io/${{ github.repository }}:${GITHUB_REF_NAME#v}-${{ steps.init.outputs.system }}"
+
+  manifest:
+    needs: image
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Initialize
+        id: init
+        uses: spotdemo4/nix-init@a4440ed9daa3faedcfc8cd491dbcfa5e38d84156 # v1.8.14
+
+      - name: Login
+        run: docker login ghcr.io -u "${{ github.actor }}" -p "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Create manifest
+        run: |
+          VERSION="ghcr.io/${{ github.repository }}:${GITHUB_REF_NAME#v}"
+          LATEST="ghcr.io/${{ github.repository }}:latest"
+
+          docker manifest create "${VERSION}" \
+            "${VERSION}-x86_64-linux" \
+            "${VERSION}-aarch64-linux" \
+            "${VERSION}-aarch64-darwin"
+
+          docker manifest annotate "${VERSION}" "${VERSION}-x86_64-linux" --arch amd64 --os linux
+          docker manifest annotate "${VERSION}" "${VERSION}-aarch64-linux" --arch arm64 --os linux
+          docker manifest annotate "${VERSION}" "${VERSION}-aarch64-darwin" --arch arm64 --os darwin
+
+          docker manifest create "${LATEST}" \
+            "${VERSION}-x86_64-linux" \
+            "${VERSION}-aarch64-linux" \
+            "${VERSION}-aarch64-darwin"
+
+          docker manifest annotate "${LATEST}" "${VERSION}-x86_64-linux" --arch amd64 --os linux
+          docker manifest annotate "${LATEST}" "${VERSION}-aarch64-linux" --arch arm64 --os linux
+          docker manifest annotate "${LATEST}" "${VERSION}-aarch64-darwin" --arch arm64 --os darwin
+
+          docker manifest push "${VERSION}"
+          docker manifest push "${LATEST}"

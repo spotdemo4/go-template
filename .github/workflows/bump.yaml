@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   bump:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Initialize
         uses: spotdemo4/nix-init@a4440ed9daa3faedcfc8cd491dbcfa5e38d84156 # v1.8.14
@@ -27,8 +27,11 @@ jobs:
           app_id: ${{ vars.CLIENT_ID }}
           app_key: ${{ secrets.PRIVATE_KEY }}
           fetch_depth: 0
+          shell: bump
 
       - name: Bump
         uses: spotdemo4/bumper@32534ba92eb765a5dd0d22d2ee2064748d0a2042 # v0.2.5
         with:
           force: ${{ inputs.force }}
+          files: |-
+            .github/README.md
