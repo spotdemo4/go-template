@@ -71,6 +71,13 @@ bumper
 docker run ghcr.io/spotdemo4/go-template:0.1.7
 ```
 
+### Action
+
+```yaml
+- name: node-template
+  uses: docker://ghcr.io/spotdemo4/go-template:0.1.7
+```
+
 ### Nix
 
 ```elm
