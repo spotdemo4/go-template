@@ -27,7 +27,14 @@ jobs:
     needs: check
     strategy:
       matrix:
-        target: [x86_64-windows, x86_64-linux, aarch64-linux, aarch64-darwin]
+        target:
+          [
+            x86_64-windows,
+            x86_64-linux,
+            aarch64-linux,
+            arm-linux,
+            aarch64-darwin,
+          ]
     runs-on: ubuntu-24.04
     steps:
       - name: Initialize
