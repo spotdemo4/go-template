@@ -154,7 +154,7 @@
 
         packages.default = pkgs.buildGoModule (finalAttrs: {
           pname = "go-template";
-          version = "0.1.6";
+          version = "0.1.7";
 
           src = builtins.path {
             name = "root";
