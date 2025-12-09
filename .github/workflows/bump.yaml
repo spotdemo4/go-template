@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@0a2f62e3b132c09b144b6957976f538f79fc81a2 # v1.10.0
+        uses: spotdemo4/nix-init@59e9eaa3d67e67b17b92ce2c6ffc83deed76fc91 # v1.11.0
         with:
           app_id: ${{ vars.CLIENT_ID }}
           app_key: ${{ secrets.PRIVATE_KEY }}
@@ -30,7 +30,7 @@ jobs:
           shell: bump
 
       - name: Bump
-        uses: spotdemo4/bumper@a903b3594c1206a8c4d96022b36a956850dc17a7 # v0.3.0
+        uses: spotdemo4/bumper@47e22c10f86c5db6679c74ac50c223973daf93ab # v0.5.0
         with:
           force: ${{ inputs.force }}
           files: |-
