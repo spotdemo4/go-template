@@ -1,7 +1,7 @@
 # go template
 
-![check](https://github.com/spotdemo4/go-template/actions/workflows/check.yaml/badge.svg?branch=main)
-![vulnerable](https://github.com/spotdemo4/go-template/actions/workflows/vulnerable.yaml/badge.svg?branch=main)
+[![check](https://github.com/spotdemo4/go-template/actions/workflows/check.yaml/badge.svg?branch=main)](https://github.com/spotdemo4/go-template/actions/workflows/check.yaml)
+[![vulnerable](https://github.com/spotdemo4/go-template/actions/workflows/vulnerable.yaml/badge.svg?branch=main)](https://github.com/spotdemo4/go-template/actions/workflows/vulnerable.yaml)
 
 Template for starting [go](https://go.dev/) projects, part of [spotdemo4/templates](https://github.com/spotdemo4/templates)
 

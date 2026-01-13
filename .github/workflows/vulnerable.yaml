@@ -35,7 +35,7 @@ jobs:
         run: nix build -o result
 
       - name: Run vulnix
-        uses: spotdemo4/vulnix-action@0dc86e0ad11bb6741e36803cb39984172df4af79 # v1.1.2
+        uses: spotdemo4/nix-scan@0dc86e0ad11bb6741e36803cb39984172df4af79 # v1.1.2
         with:
           path: result
           score: 7
