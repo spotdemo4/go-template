@@ -20,6 +20,11 @@
     "editor.defaultFormatter": "jnoortheen.nix-ide"
   },
 
+  // toml
+  "[toml]": {
+    "editor.defaultFormatter": "tombi-toml.tombi"
+  },
+
   // actions
   "editor.defaultFormatter": "prettier.prettier-vscode"
 }

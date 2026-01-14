@@ -3,6 +3,6 @@
     "golang.go",
     "jnoortheen.nix-ide",
     "prettier.prettier-vscode",
-    "tamasfe.even-better-toml"
+    "tombi-toml.tombi"
   ]
 }

@@ -18,17 +18,12 @@
       inputs.systems.follows = "systems";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    semgrep-rules = {
-      url = "github:semgrep/semgrep-rules";
-      flake = false;
-    };
   };
 
   outputs =
     {
       nixpkgs,
       trev,
-      semgrep-rules,
       ...
     }:
     trev.libs.mkFlake (
@@ -41,6 +36,7 @@
             trev.overlays.libs
           ];
         };
+        fs = pkgs.lib.fileset;
       in
       rec {
         devShells = {
@@ -50,18 +46,19 @@
               go
               gotools
               gopls
+
+              # linters
               revive
-              goreleaser
+
+              # formatters
+              nixfmt
+              tombi
+              prettier
 
               # util
+              goreleaser
               air
               bumper
-
-              # nix
-              nixfmt
-
-              # actions
-              prettier
             ];
             shellHook = pkgs.shellhook.ref;
           };
@@ -74,8 +71,10 @@
 
           release = pkgs.mkShell {
             packages = with pkgs; [
-              go
               goreleaser
+
+              # go build
+              go
             ];
           };
 
@@ -91,7 +90,6 @@
           vulnerable = pkgs.mkShell {
             packages = with pkgs; [
               # go
-              go
               govulncheck
 
               # nix
@@ -106,36 +104,87 @@
         checks = pkgs.lib.mkChecks {
           go = {
             src = packages.default;
-            deps = with pkgs; [
-              revive
-              goreleaser
-              opengrep
-            ];
             script = ''
               go test ./...
-              revive -config revive.toml -set_exit_status ./...
-              goreleaser check
-              opengrep scan \
-                --quiet \
-                --error \
-                --use-git-ignore \
-                --exclude="/vendor/" \
-                --config="${semgrep-rules}/go"
             '';
           };
 
-          action = {
-            src = ./.;
+          revive = {
+            src = fs.toSource {
+              root = ./.;
+              fileset = fs.unions [
+                ./revive.toml
+                (fs.fileFilter (file: file.hasExt "go") ./.)
+              ];
+            };
             deps = with pkgs; [
-              action-validator
+              revive
             ];
             script = ''
-              action-validator action.yaml
+              revive -config revive.toml -set_exit_status ./...
             '';
+          };
+
+          actions = {
+            src = fs.toSource {
+              root = ./.;
+              fileset = fs.unions [
+                ./action.yaml
+                ./.github/workflows
+              ];
+            };
+            deps = with pkgs; [
+              action-validator
+              octoscan
+            ];
+            script = ''
+              action-validator **/*.yaml
+              octoscan scan .
+            '';
+          };
+
+          goreleaser = {
+            src = fs.toSource {
+              root = ./.;
+              fileset = ./.goreleaser.yaml;
+            };
+            deps = with pkgs; [
+              goreleaser
+            ];
+            script = ''
+              goreleaser check
+            '';
+          };
+
+          docker = {
+            src = fs.toSource {
+              root = ./.;
+              fileset = ./Dockerfile;
+            };
+            deps = with pkgs; [
+              hadolint
+            ];
+            script = ''
+              hadolint Dockerfile
+            '';
+          };
+
+          renovate = {
+            src = fs.toSource {
+              root = ./.github;
+              fileset = ./.github/renovate.json;
+            };
+            deps = with pkgs; [
+              renovate
+            ];
+            script = "renovate-config-validator renovate.json";
           };
 
           nix = {
-            src = ./.;
+            src = fs.toSource {
+              root = ./.;
+              fileset = fs.fileFilter (file: file.hasExt "nix") ./.;
+            };
             deps = with pkgs; [
               nixfmt-tree
             ];
@@ -144,19 +193,30 @@
             '';
           };
 
-          actions = {
-            src = ./.;
+          prettier = {
+            src = fs.toSource {
+              root = ./.;
+              fileset = fs.fileFilter (file: file.hasExt "yaml" || file.hasExt "json" || file.hasExt "md") ./.;
+            };
             deps = with pkgs; [
               prettier
-              action-validator
-              octoscan
-              renovate
             ];
             script = ''
-              prettier . "!vendor" --check
-              action-validator .github/**/*.yaml
-              octoscan scan .github
-              renovate-config-validator .github/renovate.json
+              prettier --check .
+            '';
+          };
+
+          tombi = {
+            src = fs.toSource {
+              root = ./.;
+              fileset = fs.fileFilter (file: file.hasExt "toml") ./.;
+            };
+            deps = with pkgs; [
+              tombi
+            ];
+            script = ''
+              tombi format --offline --check
+              tombi lint --offline --error-on-warnings
             '';
           };
         };
@@ -170,10 +230,15 @@
           pname = "go-template";
           version = "0.4.1";
 
-          src = builtins.path {
-            name = "root";
-            path = ./.;
+          src = fs.toSource {
+            root = ./.;
+            fileset = fs.unions [
+              ./go.mod
+              ./go.sum
+              (fs.fileFilter (file: file.hasExt "go") ./.)
+            ];
           };
+
           goSum = finalAttrs.src + "go.sum";
           vendorHash = null;
           env.CGO_ENABLED = 0;
