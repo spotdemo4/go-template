@@ -121,7 +121,7 @@
               revive
             ];
             script = ''
-              revive -config revive.toml -set_exit_status ./...
+              revive -set_exit_status ./...
             '';
           };
 
