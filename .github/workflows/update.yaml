@@ -12,8 +12,8 @@ jobs:
   renovate:
     runs-on: ubuntu-24.04
     steps:
-      - name: Initialize
-        id: init
+      - id: init
+        name: Initialize
         uses: spotdemo4/nix-init@52cb2ce76d8414b55e388944a72ddaabbff8bd55 # v1.17.0
         with:
           app_id: ${{ vars.CLIENT_ID }}
@@ -21,7 +21,8 @@ jobs:
           shell: update
 
       - name: Renovate
+        run: renovate
         env:
           RENOVATE_CONFIG_FILE: .github/renovate.json
           RENOVATE_TOKEN: ${{ steps.init.outputs.token }}
-        run: renovate
+          LOG_LEVEL: ${{ runner.debug == '1' && 'debug' || 'info' }}

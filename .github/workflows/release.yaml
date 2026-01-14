@@ -3,116 +3,35 @@ name: release
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch:
 
 permissions:
-  contents: write
-  packages: write
+  contents: read
 
 jobs:
-  check:
+  goreleaser:
     runs-on: ubuntu-24.04
     steps:
-      - name: Initialize
-        uses: spotdemo4/nix-init@52cb2ce76d8414b55e388944a72ddaabbff8bd55 # v1.17.0
-
-      - name: Check
-        run: nix flake check
-
-      - name: Release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+      - id: init
+        name: Initialize
+        uses: spotdemo4/nix-init@f51467ccff80c7dac6ce50368bc262bddd37f0a6 # v1.17.1
         with:
-          generate_release_notes: true
-
-  binary:
-    needs: check
-    strategy:
-      matrix:
-        target:
-          [
-            x86_64-windows,
-            x86_64-linux,
-            aarch64-linux,
-            arm-linux,
-            aarch64-darwin,
-          ]
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Initialize
-        id: init
-        uses: spotdemo4/nix-init@52cb2ce76d8414b55e388944a72ddaabbff8bd55 # v1.17.0
-
-      - name: Bundle
-        run: nix bundle --bundler github:spotdemo4/nur#go-${{ matrix.target }} -o bundle
-
-      - if: matrix.target != 'x86_64-windows'
-        name: Package (tar.xz)
-        run: tar -cJhf "go-template-${GITHUB_REF_NAME#v}-${{ matrix.target }}.tar.xz" bundle
-
-      - if: matrix.target == 'x86_64-windows'
-        name: Package (zip)
-        run: zip -r "go-template-${GITHUB_REF_NAME#v}-${{ matrix.target }}.zip" bundle
-
-      - name: Release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
-        with:
-          files: go-template-*-${{ matrix.target }}.*
-
-  image:
-    needs: check
-    strategy:
-      matrix:
-        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-15]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Initialize
-        id: init
-        uses: spotdemo4/nix-init@52cb2ce76d8414b55e388944a72ddaabbff8bd55 # v1.17.0
-        with:
+          app_id: ${{ vars.CLIENT_ID }}
+          app_key: ${{ secrets.PRIVATE_KEY }}
           shell: release
+          fetch_depth: 0
 
-      - name: Bundle
-        run: nix bundle --bundler github:spotdemo4/nur#docker-stream -o result
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ steps.init.outputs.user }}
+          password: ${{ steps.init.outputs.token }}
 
-      - name: Release
-        run: |
-          ./result | gzip --fast | skopeo --insecure-policy copy \
-            --dest-creds=${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} \
-            docker-archive:/dev/stdin \
-            "docker://ghcr.io/${{ github.repository }}:${GITHUB_REF_NAME#v}-${{ steps.init.outputs.system }}"
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
 
-  manifest:
-    needs: image
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Initialize
-        id: init
-        uses: spotdemo4/nix-init@52cb2ce76d8414b55e388944a72ddaabbff8bd55 # v1.17.0
-
-      - name: Login
-        run: docker login ghcr.io -u "${{ github.actor }}" -p "${{ secrets.GITHUB_TOKEN }}"
-
-      - name: Create manifest
-        run: |
-          VERSION="ghcr.io/${{ github.repository }}:${GITHUB_REF_NAME#v}"
-          LATEST="ghcr.io/${{ github.repository }}:latest"
-
-          docker manifest create "${VERSION}" \
-            "${VERSION}-x86_64-linux" \
-            "${VERSION}-aarch64-linux" \
-            "${VERSION}-aarch64-darwin"
-
-          docker manifest annotate "${VERSION}" "${VERSION}-x86_64-linux" --arch amd64 --os linux
-          docker manifest annotate "${VERSION}" "${VERSION}-aarch64-linux" --arch arm64 --os linux
-          docker manifest annotate "${VERSION}" "${VERSION}-aarch64-darwin" --arch arm64 --os darwin
-
-          docker manifest create "${LATEST}" \
-            "${VERSION}-x86_64-linux" \
-            "${VERSION}-aarch64-linux" \
-            "${VERSION}-aarch64-darwin"
-
-          docker manifest annotate "${LATEST}" "${VERSION}-x86_64-linux" --arch amd64 --os linux
-          docker manifest annotate "${LATEST}" "${VERSION}-aarch64-linux" --arch arm64 --os linux
-          docker manifest annotate "${LATEST}" "${VERSION}-aarch64-darwin" --arch arm64 --os darwin
-
-          docker manifest push "${VERSION}"
-          docker manifest push "${LATEST}"
+      - name: Run GoReleaser
+        run: goreleaser release
+        env:
+          GITHUB_TOKEN: ${{ steps.init.outputs.token }}

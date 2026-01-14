@@ -5,6 +5,7 @@
 # build
 /build/
 /tmp/
+/dist/
 
 # nix
 /result*

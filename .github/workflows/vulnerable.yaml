@@ -31,15 +31,6 @@ jobs:
       - name: Run flake-checker
         run: flake-checker -f
 
-      - name: Build
-        run: nix build -o result
-
-      - name: Run vulnix
-        uses: spotdemo4/nix-scan@0dc86e0ad11bb6741e36803cb39984172df4af79 # v1.1.2
-        with:
-          path: result
-          score: 7
-
   actions:
     runs-on: ubuntu-24.04
     steps:

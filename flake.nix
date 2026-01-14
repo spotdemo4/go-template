@@ -50,7 +50,8 @@
               go
               gotools
               gopls
-              golangci-lint
+              revive
+              goreleaser
 
               # util
               air
@@ -67,13 +68,14 @@
 
           bump = pkgs.mkShell {
             packages = with pkgs; [
-              nix-update
+              bumper
             ];
           };
 
           release = pkgs.mkShell {
             packages = with pkgs; [
-              skopeo
+              go
+              goreleaser
             ];
           };
 
@@ -105,12 +107,14 @@
           go = {
             src = packages.default;
             deps = with pkgs; [
-              golangci-lint
+              revive
+              goreleaser
               opengrep
             ];
             script = ''
               go test ./...
-              golangci-lint run ./...
+              revive -config revive.toml -set_exit_status ./...
+              goreleaser check
               opengrep scan \
                 --quiet \
                 --error \
