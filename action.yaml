@@ -4,4 +4,4 @@ author: trev
 
 runs:
   using: docker
-  image: docker://ghcr.io/spotdemo4/go-template:0.4.1
+  image: docker://ghcr.io/spotdemo4/go-template:0.4.2
