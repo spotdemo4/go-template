@@ -143,7 +143,7 @@
               renovate
             ];
             script = ''
-              prettier --check .
+              prettier . "!vendor" --check
               action-validator .github/**/*.yaml
               octoscan scan .github
               renovate-config-validator .github/renovate.json

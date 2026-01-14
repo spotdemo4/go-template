@@ -1,6 +1,0 @@
-# lock file
-/flake.lock
-/go.sum
-
-# generated
-/vendor/
