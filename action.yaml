@@ -1,0 +1,7 @@
+name: go template
+description: a template for go projects
+author: trev
+
+runs:
+  using: docker
+  image: docker://ghcr.io/spotdemo4/go-template:0.3.1

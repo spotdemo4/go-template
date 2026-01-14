@@ -57,13 +57,13 @@ bumper
 
 ### Binary
 
-| OS      | Architecture | Download                                                                                                                                             |
-| ------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Linux   | amd64        | [go-template-0.3.1-x86_64-linux.tar.xz](https://github.com/spotdemo4/go-template/releases/download/v0.3.1/go-template-0.3.1-x86_64-linux.tar.xz)     |
-| Linux   | arm64        | [go-template-0.3.1-aarch64-linux.tar.xz](https://github.com/spotdemo4/go-template/releases/download/v0.3.1/go-template-0.3.1-aarch64-linux.tar.xz)   |
-| Linux   | arm          | [go-template-0.3.1-arm-linux.tar.xz](https://github.com/spotdemo4/go-template/releases/download/v0.3.1/go-template-0.3.1-arm-linux.tar.xz)           |
-| MacOS   | arm64        | [go-template-0.3.1-aarch64-darwin.tar.xz](https://github.com/spotdemo4/go-template/releases/download/v0.3.1/go-template-0.3.1-aarch64-darwin.tar.xz) |
-| Windows | amd64        | [go-template-0.3.1-x86_64-windows.zip](https://github.com/spotdemo4/go-template/releases/download/v0.3.1/go-template-0.3.1-x86_64-windows.zip)       |
+| OS      | Architecture | Download                                                                                                                                         |
+| ------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Linux   | amd64        | [go-template_0.3.1_linux_amd64.tar.gz](https://github.com/spotdemo4/go-template/releases/download/v0.3.1/go-template_0.3.1_linux_amd64.tar.gz)   |
+| Linux   | arm64        | [go-template_0.3.1_linux_arm64.tar.gz](https://github.com/spotdemo4/go-template/releases/download/v0.3.1/go-template_0.3.1_linux_arm64.tar.gz)   |
+| Linux   | arm          | [go-template_0.3.1_linux_arm.tar.gz](https://github.com/spotdemo4/go-template/releases/download/v0.3.1/go-template_0.3.1_linux_arm.tar.gz)       |
+| MacOS   | arm64        | [go-template_0.3.1_darwin_arm64.tar.gz](https://github.com/spotdemo4/go-template/releases/download/v0.3.1/go-template_0.3.1_darwin_arm64.tar.gz) |
+| Windows | amd64        | [go-template_0.3.1_windows_amd64.tar.gz](https://github.com/spotdemo4/go-template/releases/download/v0.3.1/go-template_0.3.1_windows_amd64.zip)  |
 
 ### Docker
 

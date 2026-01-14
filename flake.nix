@@ -124,6 +124,16 @@
             '';
           };
 
+          action = {
+            src = ./.;
+            deps = with pkgs; [
+              action-validator
+            ];
+            script = ''
+              action-validator action.yaml
+            '';
+          };
+
           nix = {
             src = ./.;
             deps = with pkgs; [
