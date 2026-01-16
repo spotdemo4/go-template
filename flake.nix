@@ -140,19 +140,6 @@
             '';
           };
 
-          docker = {
-            src = fs.toSource {
-              root = ./.;
-              fileset = ./Dockerfile;
-            };
-            deps = with pkgs; [
-              hadolint
-            ];
-            script = ''
-              hadolint Dockerfile
-            '';
-          };
-
           renovate = {
             src = fs.toSource {
               root = ./.github;
