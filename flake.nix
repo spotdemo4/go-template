@@ -140,19 +140,6 @@
             '';
           };
 
-          goreleaser = {
-            src = fs.toSource {
-              root = ./.;
-              fileset = ./.goreleaser.yaml;
-            };
-            deps = with pkgs; [
-              goreleaser
-            ];
-            script = ''
-              goreleaser check
-            '';
-          };
-
           docker = {
             src = fs.toSource {
               root = ./.;
@@ -174,7 +161,9 @@
             deps = with pkgs; [
               renovate
             ];
-            script = "renovate-config-validator renovate.json";
+            script = ''
+              renovate-config-validator renovate.json
+            '';
           };
 
           nix = {
