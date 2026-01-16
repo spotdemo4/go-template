@@ -199,7 +199,7 @@
           run.script = "go run .";
         };
 
-        packages = {
+        packages = with pkgs.lib; rec {
           default = pkgs.buildGoModule (finalAttrs: {
             pname = "go-template";
             version = "0.4.3";
@@ -214,18 +214,24 @@
             };
 
             goSum = finalAttrs.src + "go.sum";
-            vendorHash = null;
             env.CGO_ENABLED = 0;
+            vendorHash = null;
 
             meta = {
               description = "go template";
               mainProgram = "go-template";
               homepage = "https://github.com/spotdemo4/go-template";
               changelog = "https://github.com/spotdemo4/go-template/releases/tag/v${finalAttrs.version}";
-              license = pkgs.lib.licenses.mit;
-              platforms = pkgs.lib.platforms.all;
+              license = licenses.mit;
+              platforms = platforms.all;
             };
           });
+
+          linux-amd64 = go.moduleToPlatform default "linux" "amd64";
+          linux-arm64 = go.moduleToPlatform default "linux" "arm64";
+          linux-arm = go.moduleToPlatform default "linux" "arm";
+          darwin-arm64 = go.moduleToPlatform default "darwin" "arm64";
+          windows-amd64 = go.moduleToPlatform default "windows" "amd64";
 
           image = pkgs.dockerTools.buildLayeredImage {
             name = packages.default.pname;
@@ -240,7 +246,7 @@
             meta = packages.default.meta;
 
             config = {
-              Cmd = [ "${pkgs.lib.meta.getExe packages.default}" ];
+              Cmd = [ "${meta.getExe packages.default}" ];
             };
           };
         };
