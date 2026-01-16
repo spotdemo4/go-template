@@ -203,7 +203,7 @@
         packages = with pkgs.lib; rec {
           default = pkgs.buildGoModule (finalAttrs: {
             pname = "go-template";
-            version = "0.5.1";
+            version = "0.5.2";
 
             src = fs.toSource {
               root = ./.;
