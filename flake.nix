@@ -227,12 +227,6 @@
             };
           });
 
-          linux-amd64 = go.moduleToPlatform default "linux" "amd64";
-          linux-arm64 = go.moduleToPlatform default "linux" "arm64";
-          linux-arm = go.moduleToPlatform default "linux" "arm";
-          darwin-arm64 = go.moduleToPlatform default "darwin" "arm64";
-          windows-amd64 = go.moduleToPlatform default "windows" "amd64";
-
           image = pkgs.dockerTools.buildLayeredImage {
             name = packages.default.pname;
             tag = packages.default.version;
@@ -249,6 +243,12 @@
               Cmd = [ "${meta.getExe packages.default}" ];
             };
           };
+
+          linux-amd64 = go.toPlatform default "linux" "amd64";
+          linux-arm64 = go.toPlatform default "linux" "arm64";
+          linux-arm = go.toPlatform default "linux" "arm";
+          darwin-arm64 = go.toPlatform default "darwin" "arm64";
+          windows-amd64 = go.toPlatform default "windows" "amd64";
         };
 
         formatter = pkgs.nixfmt-tree;
