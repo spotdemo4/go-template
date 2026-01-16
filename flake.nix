@@ -71,10 +71,7 @@
 
           release = pkgs.mkShell {
             packages = with pkgs; [
-              goreleaser
-
-              # go build
-              go
+              nix-flake-release
             ];
           };
 
@@ -226,32 +223,51 @@
           run.script = "go run .";
         };
 
-        packages.default = pkgs.buildGoModule (finalAttrs: {
-          pname = "go-template";
-          version = "0.4.2";
+        packages = {
+          default = pkgs.buildGoModule (finalAttrs: {
+            pname = "go-template";
+            version = "0.4.2";
 
-          src = fs.toSource {
-            root = ./.;
-            fileset = fs.unions [
-              ./go.mod
-              ./go.sum
-              (fs.fileFilter (file: file.hasExt "go") ./.)
+            src = fs.toSource {
+              root = ./.;
+              fileset = fs.unions [
+                ./go.mod
+                ./go.sum
+                (fs.fileFilter (file: file.hasExt "go") ./.)
+              ];
+            };
+
+            goSum = finalAttrs.src + "go.sum";
+            vendorHash = null;
+            env.CGO_ENABLED = 0;
+
+            meta = {
+              description = "go template";
+              mainProgram = "go-template";
+              homepage = "https://github.com/spotdemo4/go-template";
+              changelog = "https://github.com/spotdemo4/go-template/releases/tag/v${finalAttrs.version}";
+              license = pkgs.lib.licenses.mit;
+              platforms = pkgs.lib.platforms.all;
+            };
+          });
+
+          image = pkgs.dockerTools.buildLayeredImage {
+            name = packages.default.pname;
+            tag = packages.default.version;
+
+            contents = with pkgs; [
+              dockerTools.caCertificates
+              packages.default
             ];
-          };
 
-          goSum = finalAttrs.src + "go.sum";
-          vendorHash = null;
-          env.CGO_ENABLED = 0;
+            created = "now";
+            meta = packages.default.meta;
 
-          meta = {
-            description = "go template";
-            mainProgram = "go-template";
-            homepage = "https://github.com/spotdemo4/go-template";
-            changelog = "https://github.com/spotdemo4/go-template/releases/tag/v${finalAttrs.version}";
-            license = pkgs.lib.licenses.mit;
-            platforms = pkgs.lib.platforms.all;
+            config = {
+              Cmd = [ "${pkgs.lib.meta.getExe packages.default}" ];
+            };
           };
-        });
+        };
 
         formatter = pkgs.nixfmt-tree;
       }

@@ -10,34 +10,43 @@ permissions:
 
 jobs:
   go:
-    runs-on: ubuntu-24.04
+    runs-on: nix
     steps:
-      - name: Initialize
-        uses: spotdemo4/nix-init@f51467ccff80c7dac6ce50368bc262bddd37f0a6 # v1.17.1
+      - name: Checkout
+        uses: spotdemo4/better-checkout@fbd1d9e60d4d4c5c9efb2244c052cac648d62944 # v0.1.1
+
+      - name: Develop
+        uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
         with:
-          shell: vulnerable
+          arguments: ".#vulnerable"
 
       - name: Run govulncheck
         run: govulncheck ./...
 
   nix:
-    runs-on: ubuntu-24.04
+    runs-on: nix
     steps:
-      - name: Initialize
-        uses: spotdemo4/nix-init@f51467ccff80c7dac6ce50368bc262bddd37f0a6 # v1.17.1
+      - name: Checkout
+        uses: spotdemo4/better-checkout@fbd1d9e60d4d4c5c9efb2244c052cac648d62944 # v0.1.1
+
+      - name: Develop
+        uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
         with:
-          shell: vulnerable
+          arguments: ".#vulnerable"
 
       - name: Run flake-checker
         run: flake-checker -f
 
   actions:
-    runs-on: ubuntu-24.04
+    runs-on: nix
     steps:
-      - name: Initialize
-        uses: spotdemo4/nix-init@f51467ccff80c7dac6ce50368bc262bddd37f0a6 # v1.17.1
+      - name: Checkout
+        uses: spotdemo4/better-checkout@fbd1d9e60d4d4c5c9efb2244c052cac648d62944 # v0.1.1
+
+      - name: Develop
+        uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
         with:
-          shell: vulnerable
+          arguments: ".#vulnerable"
 
       - name: Run octoscan
-        run: octoscan scan --verbose .github
+        run: octoscan scan .github

@@ -10,19 +10,23 @@ permissions:
 
 jobs:
   renovate:
-    runs-on: ubuntu-24.04
+    runs-on: nix
     steps:
-      - id: init
-        name: Initialize
-        uses: spotdemo4/nix-init@f51467ccff80c7dac6ce50368bc262bddd37f0a6 # v1.17.1
+      - id: checkout
+        name: Checkout
+        uses: spotdemo4/better-checkout@fbd1d9e60d4d4c5c9efb2244c052cac648d62944 # v0.1.1
         with:
-          app_id: ${{ vars.CLIENT_ID }}
-          app_key: ${{ secrets.PRIVATE_KEY }}
-          shell: update
+          app-id: ${{ vars.CLIENT_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
+
+      - name: Develop
+        uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
+        with:
+          arguments: ".#update"
 
       - name: Renovate
         run: renovate
         env:
           RENOVATE_CONFIG_FILE: .github/renovate.json
-          RENOVATE_TOKEN: ${{ steps.init.outputs.token }}
+          RENOVATE_TOKEN: ${{ steps.checkout.outputs.token }}
           LOG_LEVEL: ${{ runner.debug == '1' && 'debug' || 'info' }}

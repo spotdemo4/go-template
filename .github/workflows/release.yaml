@@ -13,27 +13,21 @@ permissions:
   packages: write
 
 jobs:
-  goreleaser:
-    runs-on: ubuntu-24.04
+  release:
+    runs-on: nix
     steps:
-      - id: init
-        name: Initialize
-        uses: spotdemo4/nix-init@f51467ccff80c7dac6ce50368bc262bddd37f0a6 # v1.17.1
+      - name: Checkout
+        uses: spotdemo4/better-checkout@fbd1d9e60d4d4c5c9efb2244c052cac648d62944 # v0.1.1
         with:
-          shell: release
-          fetch_depth: 0
+          app-id: ${{ vars.CLIENT_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
+      - name: Develop
+        uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          arguments: ".#release"
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
-
-      - name: Run GoReleaser
-        run: goreleaser release
+      - name: Run nix-release
+        run: nix-flake-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
