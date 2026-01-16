@@ -87,6 +87,7 @@
           vulnerable = pkgs.mkShell {
             packages = with pkgs; [
               # go
+              go
               govulncheck
 
               # nix
