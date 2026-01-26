@@ -206,9 +206,9 @@
         };
 
         packages = with pkgs.lib; rec {
-          default = pkgs.buildGoModule {
+          default = pkgs.buildGoModule (finalAttrs: {
             pname = "go-template";
-            version = "0.5.3";
+            version = "0.5.4";
 
             src = fs.toSource {
               root = ./.;
@@ -232,7 +232,7 @@
               license = licenses.mit;
               platforms = platforms.all;
             };
-          };
+          });
 
           image = makeOverridable pkgs.dockerTools.buildLayeredImage {
             name = default.pname;
