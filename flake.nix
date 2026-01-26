@@ -234,12 +234,11 @@
             };
           };
 
-          image = pkgs.dockerTools.buildLayeredImage {
+          image = makeOverridable pkgs.dockerTools.buildLayeredImage {
             name = default.pname;
             tag = default.version;
 
             contents = with pkgs; [
-              default
               dockerTools.caCertificates
             ];
 
@@ -289,19 +288,19 @@
             };
           });
 
-          image-linux-amd64 = image.overrideAttrs (prev: {
+          image-linux-amd64 = image.override (prev: {
             architecture = "amd64";
             config = prev.config // {
               Cmd = [ "${meta.getExe linux-amd64}" ];
             };
           });
-          image-linux-arm64 = image.overrideAttrs (prev: {
+          image-linux-arm64 = image.override (prev: {
             architecture = "arm64";
             config = prev.config // {
               Cmd = [ "${meta.getExe linux-arm64}" ];
             };
           });
-          image-linux-arm = image.overrideAttrs (prev: {
+          image-linux-arm = image.override (prev: {
             architecture = "arm";
             config = prev.config // {
               Cmd = [ "${meta.getExe linux-arm}" ];
