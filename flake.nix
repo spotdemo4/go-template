@@ -206,7 +206,7 @@
         };
 
         packages = with pkgs.lib; rec {
-          default = pkgs.buildGoModule (finalAttrs: {
+          default = pkgs.buildGoModule {
             pname = "go-template";
             version = "0.5.3";
 
@@ -218,10 +218,11 @@
                 (fs.fileFilter (file: file.hasExt "go") ./.)
               ];
             };
+            goSum = ./go.sum;
 
-            goSum = finalAttrs.src + "go.sum";
             env.CGO_ENABLED = 0;
             vendorHash = null;
+            doCheck = false;
 
             meta = {
               description = "go template";
@@ -231,37 +232,81 @@
               license = licenses.mit;
               platforms = platforms.all;
             };
-          });
+          };
 
           image = pkgs.dockerTools.buildLayeredImage {
-            name = packages.default.pname;
-            tag = packages.default.version;
+            name = default.pname;
+            tag = default.version;
 
             contents = with pkgs; [
+              default
               dockerTools.caCertificates
-              packages.default
             ];
 
             created = "now";
-            meta = packages.default.meta;
+            meta = default.meta;
 
             config = {
-              Cmd = [ "${meta.getExe packages.default}" ];
+              Cmd = [ "${meta.getExe default}" ];
               Labels = {
-                "org.opencontainers.image.title" = packages.default.pname;
-                "org.opencontainers.image.description" = packages.default.meta.description;
-                "org.opencontainers.image.version" = packages.default.version;
-                "org.opencontainers.image.source" = packages.default.meta.homepage;
-                "org.opencontainers.image.licenses" = packages.default.meta.license.spdxId;
+                "org.opencontainers.image.title" = default.pname;
+                "org.opencontainers.image.description" = default.meta.description;
+                "org.opencontainers.image.version" = default.version;
+                "org.opencontainers.image.source" = default.meta.homepage;
+                "org.opencontainers.image.licenses" = default.meta.license.spdxId;
               };
             };
           };
 
-          linux-amd64 = go.toPlatform default "linux" "amd64";
-          linux-arm64 = go.toPlatform default "linux" "arm64";
-          linux-arm = go.toPlatform default "linux" "arm";
-          darwin-arm64 = go.toPlatform default "darwin" "arm64";
-          windows-amd64 = go.toPlatform default "windows" "amd64";
+          linux-amd64 = default.overrideAttrs (prev: {
+            env = prev.env // {
+              GOOS = "linux";
+              GOARCH = "amd64";
+            };
+          });
+          linux-arm64 = default.overrideAttrs (prev: {
+            env = prev.env // {
+              GOOS = "linux";
+              GOARCH = "arm64";
+            };
+          });
+          linux-arm = default.overrideAttrs (prev: {
+            env = prev.env // {
+              GOOS = "linux";
+              GOARCH = "arm";
+            };
+          });
+          darwin-arm64 = default.overrideAttrs (prev: {
+            env = prev.env // {
+              GOOS = "darwin";
+              GOARCH = "amd64";
+            };
+          });
+          windows-amd64 = default.overrideAttrs (prev: {
+            env = prev.env // {
+              GOOS = "windows";
+              GOARCH = "amd64";
+            };
+          });
+
+          image-linux-amd64 = image.overrideAttrs (prev: {
+            architecture = "amd64";
+            config = prev.config // {
+              Cmd = [ "${meta.getExe linux-amd64}" ];
+            };
+          });
+          image-linux-arm64 = image.overrideAttrs (prev: {
+            architecture = "arm64";
+            config = prev.config // {
+              Cmd = [ "${meta.getExe linux-arm64}" ];
+            };
+          });
+          image-linux-arm = image.overrideAttrs (prev: {
+            architecture = "arm";
+            config = prev.config // {
+              Cmd = [ "${meta.getExe linux-arm}" ];
+            };
+          });
         };
 
         formatter = pkgs.nixfmt-tree;
