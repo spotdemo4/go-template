@@ -278,7 +278,7 @@
           darwin-arm64 = default.overrideAttrs (prev: {
             env = prev.env // {
               GOOS = "darwin";
-              GOARCH = "amd64";
+              GOARCH = "arm64";
             };
           });
           windows-amd64 = default.overrideAttrs (prev: {
