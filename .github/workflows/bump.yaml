@@ -25,16 +25,12 @@ jobs:
     runs-on: nix
     steps:
       - name: Checkout
-        uses: spotdemo4/better-checkout@b5c8c788dc5653b255e55658e8c2910b62c5f13b # v0.4.0
+        uses: spotdemo4/nix-init@ed84640dc773603827ade8ecfd81c535733130ac # v1.21.4
         with:
-          app-id: ${{ vars.CLIENT_ID }}
-          private-key: ${{ secrets.PRIVATE_KEY }}
-          fetch-depth: 0
-
-      - name: Develop
-        uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
-        with:
-          arguments: ".#bump"
+          app_id: ${{ vars.CLIENT_ID }}
+          app_key: ${{ secrets.PRIVATE_KEY }}
+          fetch_depth: 0
+          shell: bump
 
       - name: Bump
         run: bumper
