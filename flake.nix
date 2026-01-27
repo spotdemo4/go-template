@@ -58,9 +58,9 @@
               prettier
 
               # util
-              goreleaser
               air
               bumper
+              nix-flake-release
             ];
           };
 
