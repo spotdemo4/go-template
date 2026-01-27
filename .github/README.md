@@ -75,7 +75,7 @@ docker run ghcr.io/spotdemo4/go-template:0.5.7
 
 ```yaml
 - name: go template
-  uses: docker://ghcr.io/spotdemo4/go-template:0.5.7
+  uses: spotdemo4/go-template@v0.5.7
 ```
 
 ### Nix
