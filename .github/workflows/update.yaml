@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   renovate:
-    runs-on: nix
+    runs-on: ubuntu-latest
     steps:
       - id: checkout
         name: Checkout
