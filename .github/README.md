@@ -7,7 +7,7 @@
 
 Template for starting [Go](https://go.dev/) projects
 
-<small>part of [spotdemo4/templates](https://github.com/spotdemo4/templates)</small>
+Part of [spotdemo4/templates](https://github.com/spotdemo4/templates)
 
 ## Requirements
 
