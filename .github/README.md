@@ -5,16 +5,16 @@
 [![nix](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fspotdemo4%2Fgo-template%2Frefs%2Fheads%2Fmain%2Fflake.lock&query=%24.nodes.nixpkgs.original.ref&logo=nixos&logoColor=%23bac2de&label=channel&labelColor=%23313244&color=%234d6fb7)](https://nixos.org/)
 [![go](https://img.shields.io/github/go-mod/go-version/spotdemo4/go-template?logo=go&logoColor=%23bac2de&label=version&labelColor=%23313244&color=%2300ADD8)](https://go.dev/doc/devel/release)
 
-Template for starting [Go](https://go.dev/) projects
+template for starting [Go](https://go.dev/) projects
 
-Part of [spotdemo4/templates](https://github.com/spotdemo4/templates)
+part of [spotdemo4/templates](https://github.com/spotdemo4/templates)
 
-## Requirements
+## requirements
 
 - [nix](https://nixos.org/)
 - [direnv](https://direnv.net/) (optional)
 
-## Getting started
+## getting started
 
 Initialize direnv:
 
@@ -29,25 +29,25 @@ or manually enter the development environment:
 nix develop
 ```
 
-### Run
+### run
 
 ```elm
 nix run #dev
 ```
 
-### Build
+### build
 
 ```elm
 nix build
 ```
 
-### Check
+### check
 
 ```elm
 nix flake check
 ```
 
-### Release
+### release
 
 Releases are automatically created for [significant](https://www.conventionalcommits.org/en/v1.0.0/#summary) changes.
 
@@ -57,9 +57,9 @@ To manually create a version bump:
 bumper action.yaml .github/README.md
 ```
 
-## Use
+## use
 
-### Download
+### download
 
 | OS      | Architecture | Download                                                                                                                                     |
 | ------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -69,20 +69,20 @@ bumper action.yaml .github/README.md
 | MacOS   | arm64        | [go-template_0.5.7_darwin_arm64.xz](https://github.com/spotdemo4/go-template/releases/download/v0.5.7/go-template_0.5.7_darwin_arm64.xz)     |
 | Windows | amd64        | [go-template_0.5.7_windows_amd64.zip](https://github.com/spotdemo4/go-template/releases/download/v0.5.7/go-template_0.5.7_windows_amd64.zip) |
 
-### Docker
+### docker
 
 ```elm
 docker run ghcr.io/spotdemo4/go-template:0.5.7
 ```
 
-### Action
+### action
 
 ```yaml
 - name: go template
   uses: spotdemo4/go-template@v0.5.7
 ```
 
-### Nix
+### nix
 
 ```elm
 nix run github:spotdemo4/go-template

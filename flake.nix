@@ -1,5 +1,5 @@
 {
-  description = "template";
+  description = "go template";
 
   nixConfig = {
     extra-substituters = [
@@ -257,6 +257,7 @@
             };
           };
 
+          # cross-compilation
           linux-amd64 = default.overrideAttrs (prev: {
             env = prev.env // {
               GOOS = "linux";
@@ -288,19 +289,20 @@
             };
           });
 
-          image-linux-amd64 = image.override (prev: {
+          # images
+          linux-amd64-image = image.override (prev: {
             architecture = "amd64";
             config = prev.config // {
               Cmd = [ "${meta.getExe linux-amd64}" ];
             };
           });
-          image-linux-arm64 = image.override (prev: {
+          linux-arm64-image = image.override (prev: {
             architecture = "arm64";
             config = prev.config // {
               Cmd = [ "${meta.getExe linux-arm64}" ];
             };
           });
-          image-linux-arm = image.override (prev: {
+          linux-arm-image = image.override (prev: {
             architecture = "arm";
             config = prev.config // {
               Cmd = [ "${meta.getExe linux-arm}" ];
