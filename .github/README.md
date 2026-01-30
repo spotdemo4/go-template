@@ -16,7 +16,7 @@ part of [spotdemo4/templates](https://github.com/spotdemo4/templates)
 
 ## getting started
 
-Initialize direnv:
+initialize direnv:
 
 ```elm
 ln -s .envrc.project .envrc &&
@@ -49,9 +49,9 @@ nix flake check
 
 ### release
 
-Releases are automatically created for [significant](https://www.conventionalcommits.org/en/v1.0.0/#summary) changes.
+releases are automatically created for [significant](https://www.conventionalcommits.org/en/v1.0.0/#summary) changes
 
-To manually create a version bump:
+to manually create a version bump:
 
 ```elm
 bumper action.yaml .github/README.md
