@@ -26,7 +26,7 @@ jobs:
           shell: release
 
       - name: Run nix-release
-        run: nix-flake-release
+        run: flake-release
         env:
           GITHUB_TOKEN: ${{ steps.checkout.outputs.token }}
           REGISTRY: ghcr.io
