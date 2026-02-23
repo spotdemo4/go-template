@@ -41,7 +41,6 @@
       rec {
         devShells = {
           default = pkgs.mkShell {
-            name = "dev";
             shellHook = pkgs.shellhook.ref;
             packages = with pkgs; [
               # go
@@ -66,21 +65,18 @@
           };
 
           bump = pkgs.mkShell {
-            name = "bump";
             packages = with pkgs; [
               bumper
             ];
           };
 
           release = pkgs.mkShell {
-            name = "release";
             packages = with pkgs; [
               flake-release
             ];
           };
 
           update = pkgs.mkShell {
-            name = "update";
             packages = with pkgs; [
               renovate
 
@@ -90,7 +86,6 @@
           };
 
           vulnerable = pkgs.mkShell {
-            name = "vulnerable";
             packages = with pkgs; [
               # go
               go
