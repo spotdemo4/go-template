@@ -26,10 +26,15 @@ jobs:
           fetch_depth: 0
           shell: release
 
-      - name: Run nix-release
+      - name: Publish to GitHub
         run: flake-release
         env:
           GITHUB_TOKEN: ${{ steps.checkout.outputs.token }}
           REGISTRY: ghcr.io
           REGISTRY_USERNAME: ${{ github.actor }}
           REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to FlakeHub
+        uses: DeterminateSystems/flakehub-push@71f57208810a5d299fc6545350981de98fdbc860 # v6
+        with:
+          visibility: public

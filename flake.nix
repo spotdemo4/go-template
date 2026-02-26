@@ -48,10 +48,10 @@
               gotools
               gopls
 
-              # linters
+              # lint
               revive
 
-              # formatters
+              # format
               nixfmt
               tombi
               prettier
@@ -199,6 +199,7 @@
         apps = pkgs.lib.mkApps {
           dev.script = "air";
           run.script = "go run .";
+          vendor.script = "go mod tidy && go mod vendor";
         };
 
         packages = with pkgs.lib; rec {
@@ -211,6 +212,7 @@
               fileset = fs.unions [
                 ./go.mod
                 ./go.sum
+                (fs.maybeMissing ./vendor)
                 (fs.fileFilter (file: file.hasExt "go") ./.)
               ];
             };
