@@ -132,9 +132,9 @@
               action-validator
               octoscan
             ];
-            script = ''
-              action-validator **/*.yaml
-              octoscan scan .
+            forEach = ''
+              action-validator $file
+              octoscan scan $file
             '';
           };
 
@@ -153,10 +153,10 @@
             root = ./.;
             filter = file: file.hasExt "nix";
             deps = with pkgs; [
-              nixfmt-tree
+              nixfmt
             ];
-            script = ''
-              treefmt --ci
+            forEach = ''
+              nixfmt --check "$file"
             '';
           };
 
@@ -166,8 +166,8 @@
             deps = with pkgs; [
               prettier
             ];
-            script = ''
-              prettier --check .
+            forEach = ''
+              prettier --check "$file"
             '';
           };
 
@@ -177,9 +177,9 @@
             deps = with pkgs; [
               tombi
             ];
-            script = ''
-              tombi format --offline --check
-              tombi lint --offline --error-on-warnings
+            forEach = ''
+              tombi format --offline --check "$file"
+              tombi lint --offline --error-on-warnings "$file"
             '';
           };
         };
