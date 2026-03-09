@@ -109,13 +109,11 @@
           };
 
           revive = {
-            src = fs.toSource {
-              root = ./.;
-              fileset = fs.unions [
-                ./revive.toml
-                (fs.fileFilter (file: file.hasExt "go") ./.)
-              ];
-            };
+            root = ./.;
+            fileset = fs.unions [
+              ./revive.toml
+              (fs.fileFilter (file: file.hasExt "go") ./.)
+            ];
             deps = with pkgs; [
               revive
             ];
@@ -125,13 +123,11 @@
           };
 
           actions = {
-            src = fs.toSource {
-              root = ./.;
-              fileset = fs.unions [
-                ./action.yaml
-                ./.github/workflows
-              ];
-            };
+            root = ./.;
+            fileset = fs.unions [
+              ./action.yaml
+              ./.github/workflows
+            ];
             deps = with pkgs; [
               action-validator
               octoscan
@@ -143,10 +139,8 @@
           };
 
           renovate = {
-            src = fs.toSource {
-              root = ./.github;
-              fileset = ./.github/renovate.json;
-            };
+            root = ./.github;
+            fileset = ./.github/renovate.json;
             deps = with pkgs; [
               renovate
             ];
@@ -156,10 +150,8 @@
           };
 
           nix = {
-            src = fs.toSource {
-              root = ./.;
-              fileset = fs.fileFilter (file: file.hasExt "nix") ./.;
-            };
+            root = ./.;
+            filter = file: file.hasExt "nix";
             deps = with pkgs; [
               nixfmt-tree
             ];
@@ -169,10 +161,8 @@
           };
 
           prettier = {
-            src = fs.toSource {
-              root = ./.;
-              fileset = fs.fileFilter (file: file.hasExt "yaml" || file.hasExt "json" || file.hasExt "md") ./.;
-            };
+            root = ./.;
+            filter = file: file.hasExt "yaml" || file.hasExt "json" || file.hasExt "md";
             deps = with pkgs; [
               prettier
             ];
@@ -182,10 +172,8 @@
           };
 
           tombi = {
-            src = fs.toSource {
-              root = ./.;
-              fileset = fs.fileFilter (file: file.hasExt "toml") ./.;
-            };
+            root = ./.;
+            filter = file: file.hasExt "toml";
             deps = with pkgs; [
               tombi
             ];
