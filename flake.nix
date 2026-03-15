@@ -133,8 +133,8 @@
               octoscan
             ];
             forEach = ''
-              action-validator $file
-              octoscan scan $file
+              action-validator "$file"
+              octoscan scan "$file"
             '';
           };
 
@@ -190,8 +190,8 @@
           vendor.script = "go mod tidy && go mod vendor";
         };
 
-        packages = with pkgs.lib; rec {
-          default = pkgs.buildGoModule (finalAttrs: {
+        packages = pkgs.lib.mkPackages (target: {
+          default = target.buildGoModule (finalAttrs: {
             pname = "go-template";
             version = "0.6.0";
 
@@ -205,97 +205,26 @@
               ];
             };
             goSum = ./go.sum;
-
-            env.CGO_ENABLED = 0;
             vendorHash = null;
-            doCheck = false;
 
             meta = {
               description = "go template";
               mainProgram = "go-template";
               homepage = "https://github.com/spotdemo4/go-template";
               changelog = "https://github.com/spotdemo4/go-template/releases/tag/v${finalAttrs.version}";
-              license = licenses.mit;
-              platforms = platforms.all;
+              license = pkgs.lib.licenses.mit;
+              platforms = pkgs.lib.platforms.all;
             };
           });
+        });
 
-          image = makeOverridable pkgs.dockerTools.buildLayeredImage {
-            name = default.pname;
-            tag = default.version;
-
-            contents = with pkgs; [
-              dockerTools.caCertificates
-            ];
-
-            created = "now";
-            meta = default.meta;
-
-            config = {
-              Cmd = [ "${meta.getExe default}" ];
-              Labels = {
-                "org.opencontainers.image.title" = default.pname;
-                "org.opencontainers.image.description" = default.meta.description;
-                "org.opencontainers.image.version" = default.version;
-                "org.opencontainers.image.source" = default.meta.homepage;
-                "org.opencontainers.image.licenses" = default.meta.license.spdxId;
-              };
-            };
+        images = pkgs.lib.mkImages (target: {
+          default = target.mkImage packages.default {
+            contents = with target; [ dockerTools.caCertificates ];
           };
+        });
 
-          # cross-compilation
-          linux-amd64 = default.overrideAttrs (prev: {
-            env = prev.env // {
-              GOOS = "linux";
-              GOARCH = "amd64";
-            };
-          });
-          linux-arm64 = default.overrideAttrs (prev: {
-            env = prev.env // {
-              GOOS = "linux";
-              GOARCH = "arm64";
-            };
-          });
-          linux-arm = default.overrideAttrs (prev: {
-            env = prev.env // {
-              GOOS = "linux";
-              GOARCH = "arm";
-            };
-          });
-          darwin-arm64 = default.overrideAttrs (prev: {
-            env = prev.env // {
-              GOOS = "darwin";
-              GOARCH = "arm64";
-            };
-          });
-          windows-amd64 = default.overrideAttrs (prev: {
-            env = prev.env // {
-              GOOS = "windows";
-              GOARCH = "amd64";
-            };
-          });
-
-          # images
-          linux-amd64-image = image.override (prev: {
-            architecture = "amd64";
-            config = prev.config // {
-              Cmd = [ "${meta.getExe linux-amd64}" ];
-            };
-          });
-          linux-arm64-image = image.override (prev: {
-            architecture = "arm64";
-            config = prev.config // {
-              Cmd = [ "${meta.getExe linux-arm64}" ];
-            };
-          });
-          linux-arm-image = image.override (prev: {
-            architecture = "arm";
-            config = prev.config // {
-              Cmd = [ "${meta.getExe linux-arm}" ];
-            };
-          });
-        };
-
+        schemas = trev.schemas;
         formatter = pkgs.nixfmt-tree;
       }
     );
