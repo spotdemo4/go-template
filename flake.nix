@@ -22,23 +22,12 @@
 
   outputs =
     {
-      nixpkgs,
+      self,
       trev,
       ...
     }:
     trev.libs.mkFlake (
-      system:
-      let
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [
-            trev.overlays.packages
-            trev.overlays.libs
-          ];
-        };
-        fs = pkgs.lib.fileset;
-      in
-      rec {
+      system: pkgs: {
         devShells = {
           default = pkgs.mkShell {
             shellHook = pkgs.shellhook.ref;
@@ -100,9 +89,9 @@
           };
         };
 
-        checks = pkgs.lib.mkChecks {
+        checks = pkgs.mkChecks {
           go = {
-            src = packages.default;
+            src = self.packages.${system}.default;
             script = ''
               go test ./...
             '';
@@ -110,9 +99,9 @@
 
           revive = {
             root = ./.;
-            fileset = fs.unions [
+            fileset = pkgs.lib.fileset.unions [
               ./revive.toml
-              (fs.fileFilter (file: file.hasExt "go") ./.)
+              (pkgs.lib.fileset.fileFilter (file: file.hasExt "go") ./.)
             ];
             deps = with pkgs; [
               revive
@@ -124,7 +113,7 @@
 
           actions = {
             root = ./.;
-            fileset = fs.unions [
+            fileset = pkgs.lib.fileset.unions [
               ./action.yaml
               ./.github/workflows
             ];
@@ -190,18 +179,18 @@
           vendor.script = "go mod tidy && go mod vendor";
         };
 
-        packages = pkgs.lib.mkPackages (target: {
-          default = target.buildGoModule (finalAttrs: {
+        packages = pkgs.mkPackages pkgs (pkgs: {
+          default = pkgs.buildGoModule (finalAttrs: {
             pname = "go-template";
             version = "0.6.0";
 
-            src = fs.toSource {
+            src = pkgs.lib.fileset.toSource {
               root = ./.;
-              fileset = fs.unions [
+              fileset = pkgs.lib.fileset.unions [
                 ./go.mod
                 ./go.sum
-                (fs.maybeMissing ./vendor)
-                (fs.fileFilter (file: file.hasExt "go") ./.)
+                (pkgs.lib.fileset.maybeMissing ./vendor)
+                (pkgs.lib.fileset.fileFilter (file: file.hasExt "go") ./.)
               ];
             };
             goSum = ./go.sum;
@@ -218,9 +207,9 @@
           });
         });
 
-        images = pkgs.lib.mkImages (target: {
-          default = target.mkImage packages.default {
-            contents = with target; [ dockerTools.caCertificates ];
+        images = pkgs.mkImages pkgs (pkgs: {
+          default = pkgs.mkImage self.packages.${system}.default {
+            contents = with pkgs; [ dockerTools.caCertificates ];
           };
         });
 
