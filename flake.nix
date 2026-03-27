@@ -173,7 +173,7 @@
           };
         };
 
-        apps = pkgs.lib.mkApps {
+        apps = pkgs.mkApps {
           dev.script = "air";
           run.script = "go run .";
           vendor.script = "go mod tidy && go mod vendor";
