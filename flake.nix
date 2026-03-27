@@ -174,9 +174,9 @@
         };
 
         apps = pkgs.mkApps {
-          dev.script = "air";
-          run.script = "go run .";
-          vendor.script = "go mod tidy && go mod vendor";
+          dev = "air";
+          run = "go run .";
+          vendor = "go mod tidy && go mod vendor";
         };
 
         packages = pkgs.mkPackages pkgs (pkgs: {
