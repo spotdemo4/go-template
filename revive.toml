@@ -1,24 +1,9 @@
 #:schema https://json.schemastore.org/any.json
 #:tombi schema.strict = false
 
+enableAllRules = true
 ignoreGeneratedHeader = false
 severity = "warning"
 confidence = 0.8
 errorCode = 1
 warningCode = 1
-enableAllRules = true
-
-[rule.add-constant]
-Disabled = true
-
-[rule.exported]
-Disabled = true
-
-[rule.package-comments]
-Disabled = true
-
-[rule.line-length-limit]
-arguments = [150]
-
-[rule.cognitive-complexity]
-arguments = [8]

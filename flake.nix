@@ -107,7 +107,7 @@
               revive
             ];
             script = ''
-              revive -set_exit_status ./...
+              revive ./...
             '';
           };
 
