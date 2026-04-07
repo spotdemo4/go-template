@@ -11,7 +11,7 @@
   };
 
   inputs = {
-    systems.url = "github:nix-systems/default";
+    systems.url = "github:spotdemo4/systems";
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     trev = {
       url = "github:spotdemo4/nur";
@@ -68,9 +68,7 @@
           update = pkgs.mkShell {
             packages = with pkgs; [
               renovate
-
-              # go mod vendor
-              go
+              go # go mod vendor
             ];
           };
 
@@ -79,97 +77,9 @@
               # go
               go
               govulncheck
-
-              # nix
-              flake-checker
-
-              # actions
-              octoscan
+              flake-checker # nix
+              octoscan # actions
             ];
-          };
-        };
-
-        checks = pkgs.mkChecks {
-          go = {
-            src = self.packages.${system}.default;
-            script = ''
-              go test ./...
-            '';
-          };
-
-          revive = {
-            root = ./.;
-            fileset = pkgs.lib.fileset.unions [
-              ./revive.toml
-              (pkgs.lib.fileset.fileFilter (file: file.hasExt "go") ./.)
-            ];
-            deps = with pkgs; [
-              revive
-            ];
-            script = ''
-              revive ./...
-            '';
-          };
-
-          actions = {
-            root = ./.;
-            fileset = pkgs.lib.fileset.unions [
-              ./action.yaml
-              ./.github/workflows
-            ];
-            deps = with pkgs; [
-              action-validator
-              octoscan
-            ];
-            forEach = ''
-              action-validator "$file"
-              octoscan scan "$file"
-            '';
-          };
-
-          renovate = {
-            root = ./.github;
-            fileset = ./.github/renovate.json;
-            deps = with pkgs; [
-              renovate
-            ];
-            script = ''
-              renovate-config-validator renovate.json
-            '';
-          };
-
-          nix = {
-            root = ./.;
-            filter = file: file.hasExt "nix";
-            deps = with pkgs; [
-              nixfmt
-            ];
-            forEach = ''
-              nixfmt --check "$file"
-            '';
-          };
-
-          prettier = {
-            root = ./.;
-            filter = file: file.hasExt "yaml" || file.hasExt "json" || file.hasExt "md";
-            deps = with pkgs; [
-              prettier
-            ];
-            forEach = ''
-              prettier --check "$file"
-            '';
-          };
-
-          tombi = {
-            root = ./.;
-            filter = file: file.hasExt "toml";
-            deps = with pkgs; [
-              tombi
-            ];
-            forEach = ''
-              tombi format --offline --check "$file"
-              tombi lint --offline --error-on-warnings "$file"
-            '';
           };
         };
 
@@ -179,33 +89,122 @@
           vendor = "go mod tidy && go mod vendor";
         };
 
-        packages = pkgs.mkPackages pkgs (pkgs: {
-          default = pkgs.buildGoModule (finalAttrs: {
-            pname = "go-template";
-            version = "0.6.1";
+        checks =
+          with pkgs.lib;
+          pkgs.mkChecks {
+            go = {
+              src = self.packages.${system}.default;
+              script = ''
+                go test ./...
+              '';
+            };
 
-            src = pkgs.lib.fileset.toSource {
+            revive = {
               root = ./.;
-              fileset = pkgs.lib.fileset.unions [
-                ./go.mod
-                ./go.sum
-                (pkgs.lib.fileset.maybeMissing ./vendor)
-                (pkgs.lib.fileset.fileFilter (file: file.hasExt "go") ./.)
+              fileset = fileset.unions [
+                ./revive.toml
+                (fileset.fileFilter (file: file.hasExt "go") ./.)
               ];
+              packages = with pkgs; [
+                revive
+              ];
+              script = ''
+                revive ./...
+              '';
             };
-            goSum = ./go.sum;
-            vendorHash = null;
 
-            meta = {
-              description = "go template";
-              mainProgram = "go-template";
-              homepage = "https://github.com/spotdemo4/go-template";
-              changelog = "https://github.com/spotdemo4/go-template/releases/tag/v${finalAttrs.version}";
-              license = pkgs.lib.licenses.mit;
-              platforms = pkgs.lib.platforms.all;
+            actions = {
+              root = ./.;
+              fileset = fileset.unions [
+                ./action.yaml
+                ./.github/workflows
+              ];
+              packages = with pkgs; [
+                action-validator
+                octoscan
+              ];
+              forEach = ''
+                action-validator "$file"
+                octoscan scan "$file"
+              '';
             };
+
+            renovate = {
+              root = ./.github;
+              fileset = ./.github/renovate.json;
+              packages = with pkgs; [
+                renovate
+              ];
+              script = ''
+                renovate-config-validator renovate.json
+              '';
+            };
+
+            nix = {
+              root = ./.;
+              filter = file: file.hasExt "nix";
+              packages = with pkgs; [
+                nixfmt
+              ];
+              forEach = ''
+                nixfmt --check "$file"
+              '';
+            };
+
+            prettier = {
+              root = ./.;
+              filter = file: file.hasExt "yaml" || file.hasExt "json" || file.hasExt "md";
+              packages = with pkgs; [
+                prettier
+              ];
+              forEach = ''
+                prettier --check "$file"
+              '';
+            };
+
+            tombi = {
+              root = ./.;
+              filter = file: file.hasExt "toml";
+              packages = with pkgs; [
+                tombi
+              ];
+              forEach = ''
+                tombi format --offline --check "$file"
+                tombi lint --offline --error-on-warnings "$file"
+              '';
+            };
+          };
+
+        packages =
+          with pkgs.lib;
+          pkgs.mkPackages pkgs (pkgs: {
+            default = pkgs.buildGoModule (finalAttrs: {
+              pname = "go-template";
+              version = "0.6.1";
+
+              src = fileset.toSource {
+                root = ./.;
+                fileset = fileset.unions [
+                  ./go.mod
+                  ./go.sum
+                  (fileset.maybeMissing ./vendor)
+                  (fileset.fileFilter (file: file.hasExt "go") ./.)
+                ];
+              };
+              goSum = ./go.sum;
+              vendorHash = null;
+
+              meta = {
+                mainProgram = "go-template";
+                description = "go template";
+                license = licenses.mit;
+                platforms = platforms.all;
+                homepage = "https://github.com/spotdemo4/go-template";
+                changelog = "https://github.com/spotdemo4/go-template/releases/tag/v${finalAttrs.version}";
+                downloadPage = "https://github.com/spotdemo4/go-template/releases/tag/v${finalAttrs.version}";
+              };
+            });
           });
-        });
 
         images = pkgs.mkImages pkgs (pkgs: {
           default = pkgs.mkImage self.packages.${system}.default {
@@ -213,8 +212,8 @@
           };
         });
 
-        schemas = trev.schemas;
         formatter = pkgs.nixfmt-tree;
+        schemas = trev.schemas;
       }
     );
 }
