@@ -180,7 +180,7 @@
           pkgs.mkPackages pkgs (pkgs: {
             default = pkgs.buildGoModule (finalAttrs: {
               pname = "go-template";
-              version = "0.6.1";
+              version = "0.6.2";
 
               src = fileset.toSource {
                 root = ./.;
