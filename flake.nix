@@ -77,6 +77,7 @@
               # go
               go
               govulncheck
+
               flake-checker # nix
               octoscan # actions
             ];
@@ -142,6 +143,7 @@
 
             nix = {
               root = ./.;
+              ignore = fileset.maybeMissing ./vendor;
               filter = file: file.hasExt "nix";
               packages = with pkgs; [
                 nixfmt
@@ -153,6 +155,7 @@
 
             prettier = {
               root = ./.;
+              ignore = fileset.maybeMissing ./vendor;
               filter = file: file.hasExt "yaml" || file.hasExt "json" || file.hasExt "md";
               packages = with pkgs; [
                 prettier
@@ -164,6 +167,7 @@
 
             tombi = {
               root = ./.;
+              ignore = fileset.maybeMissing ./vendor;
               filter = file: file.hasExt "toml";
               packages = with pkgs; [
                 tombi
@@ -175,9 +179,8 @@
             };
           };
 
-        packages =
-          with pkgs.lib;
-          pkgs.mkPackages pkgs (pkgs: {
+        packages = pkgs.mkPackages pkgs (
+          pkgs: with pkgs.lib; {
             default = pkgs.buildGoModule (finalAttrs: {
               pname = "go-template";
               version = "0.6.2";
@@ -204,7 +207,8 @@
                 downloadPage = "https://github.com/spotdemo4/go-template/releases/tag/v${finalAttrs.version}";
               };
             });
-          });
+          }
+        );
 
         images = pkgs.mkImages pkgs (pkgs: {
           default = pkgs.mkImage self.packages.${system}.default {
