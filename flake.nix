@@ -183,7 +183,7 @@
           pkgs: with pkgs.lib; {
             default = pkgs.buildGoModule (finalAttrs: {
               pname = "go-template";
-              version = "0.6.2";
+              version = "0.6.3";
 
               src = fileset.toSource {
                 root = ./.;
