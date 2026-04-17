@@ -14,8 +14,7 @@ permissions:
   packages: write
 
 jobs:
-  linux-amd64:
-    name: linux amd64
+  linux:
     runs-on: ubuntu-24.04
     steps:
       - name: Initialize
@@ -32,7 +31,11 @@ jobs:
           REGISTRY_USERNAME: ${{ github.actor }}
           REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           PACKAGES: |
+            images.x86_64-linux.default.aarch64-unknown-linux-musl
+            images.x86_64-linux.default.armv7l-unknown-linux-musleabihf
             images.x86_64-linux.default.x86_64-unknown-linux-musl
+            packages.x86_64-linux.default.aarch64-unknown-linux-musl
+            packages.x86_64-linux.default.armv7l-unknown-linux-musleabihf
             packages.x86_64-linux.default.x86_64-unknown-linux-musl
             packages.x86_64-linux.default.x86_64-w64-mingw32
 
@@ -41,31 +44,7 @@ jobs:
         with:
           visibility: public
 
-  linux-arm64:
-    name: linux arm64
-    runs-on: ubuntu-24.04-arm
-    steps:
-      - name: Initialize
-        uses: spotdemo4/nix-init@757d5ba1fa0749e877484703bece0e17c7bd5670 # v1.43.0
-        with:
-          fetch_depth: 0
-          shell: release
-
-      - name: Release to GitHub
-        run: flake-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REGISTRY: ghcr.io
-          REGISTRY_USERNAME: ${{ github.actor }}
-          REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-          PACKAGES: |
-            images.aarch64-linux.default.aarch64-unknown-linux-musl
-            images.aarch64-linux.default.armv7l-unknown-linux-musleabihf
-            packages.aarch64-linux.default.aarch64-unknown-linux-musl
-            packages.aarch64-linux.default.armv7l-unknown-linux-musleabihf
-
-  darwin-arm64:
-    name: darwin arm64
+  darwin:
     runs-on: macos-26
     steps:
       - name: Initialize

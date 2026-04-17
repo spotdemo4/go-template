@@ -182,7 +182,7 @@
           ];
         };
 
-        packages.default = pkgs.buildGoModule (
+        packages.default = pkgs.buildGo125Module (
           final: with pkgs.lib; {
             pname = "go-template";
             version = "0.7.0";
