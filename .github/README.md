@@ -13,18 +13,8 @@ part of [spotdemo4/templates](https://github.com/spotdemo4/templates)
 ## requirements
 
 - [nix](https://nixos.org/)
-- [direnv](https://direnv.net/) (optional)
 
 ## getting started
-
-initialize direnv:
-
-```elm
-ln -s .envrc.project .envrc &&
-direnv allow
-```
-
-or manually enter the development environment:
 
 ```elm
 nix develop
@@ -48,15 +38,19 @@ nix build
 nix flake check
 ```
 
-### release
-
-releases are automatically created for [significant](https://www.conventionalcommits.org/en/v1.0.0/#summary) changes
-
-to manually create a version bump:
+### format
 
 ```elm
-bumper action.yaml .github/README.md
+nix fmt
 ```
+
+### release
+
+```elm
+bumper "action.yaml" ".github/README.md"
+```
+
+releases are automatically created for [significant](https://www.conventionalcommits.org/en/v1.0.0/#summary) changes
 
 ## use
 
@@ -76,15 +70,14 @@ bumper action.yaml .github/README.md
 docker run ghcr.io/spotdemo4/go-template:0.6.3
 ```
 
-### action
-
-```yaml
-- name: go template
-  uses: spotdemo4/go-template@v0.6.3
-```
-
 ### nix
 
 ```elm
 nix run github:spotdemo4/go-template
+```
+
+### action
+
+```yaml
+- uses: spotdemo4/go-template@v0.6.1
 ```

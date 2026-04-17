@@ -38,7 +38,7 @@
               gopls
 
               # lint
-              revive
+              go-tools
 
               # format
               nixfmt
@@ -48,8 +48,6 @@
               # util
               air
               bumper
-              flake-release
-              renovate
             ];
           };
 
@@ -74,10 +72,7 @@
 
           vulnerable = pkgs.mkShell {
             packages = with pkgs; [
-              # go
-              go
-              govulncheck
-
+              govulncheck # go
               flake-checker # nix
               octoscan # actions
             ];
@@ -94,29 +89,27 @@
           with pkgs.lib;
           pkgs.mkChecks {
             go = {
-              src = self.packages.${system}.default;
-              script = ''
-                go test ./...
-              '';
-            };
-
-            revive = {
               root = ./.;
-              fileset = fileset.unions [
-                ./revive.toml
-                (fileset.fileFilter (file: file.hasExt "go") ./.)
+              filter = file: file.hasExt "go";
+              ignore = fileset.maybeMissing ./vendor;
+              include = [
+                ./go.mod
+                ./go.sum
               ];
               packages = with pkgs; [
-                revive
+                go
+                go-tools
               ];
               script = ''
-                revive ./...
+                go test ./...
+                go vet ./...
+                staticcheck ./...
               '';
             };
 
             actions = {
               root = ./.;
-              fileset = fileset.unions [
+              files = [
                 ./action.yaml
                 ./.github/workflows
               ];
@@ -132,7 +125,7 @@
 
             renovate = {
               root = ./.github;
-              fileset = ./.github/renovate.json;
+              files = ./.github/renovate.json;
               packages = with pkgs; [
                 renovate
               ];
@@ -143,8 +136,8 @@
 
             nix = {
               root = ./.;
-              ignore = fileset.maybeMissing ./vendor;
               filter = file: file.hasExt "nix";
+              ignore = fileset.maybeMissing ./vendor;
               packages = with pkgs; [
                 nixfmt
               ];
@@ -155,8 +148,8 @@
 
             prettier = {
               root = ./.;
-              ignore = fileset.maybeMissing ./vendor;
               filter = file: file.hasExt "yaml" || file.hasExt "json" || file.hasExt "md";
+              ignore = fileset.maybeMissing ./vendor;
               packages = with pkgs; [
                 prettier
               ];
@@ -167,8 +160,8 @@
 
             tombi = {
               root = ./.;
-              ignore = fileset.maybeMissing ./vendor;
               filter = file: file.hasExt "toml";
+              ignore = fileset.maybeMissing ./vendor;
               packages = with pkgs; [
                 tombi
               ];
@@ -179,44 +172,50 @@
             };
           };
 
-        packages = pkgs.mkPackages pkgs (
-          pkgs: with pkgs.lib; {
-            default = pkgs.buildGoModule (finalAttrs: {
-              pname = "go-template";
-              version = "0.6.3";
+        formatter = pkgs.treefmt.withConfig {
+          configFile = ./treefmt.toml;
+          runtimeInputs = with pkgs; [
+            go
+            nixfmt
+            tombi
+            prettier
+          ];
+        };
 
-              src = fileset.toSource {
-                root = ./.;
-                fileset = fileset.unions [
-                  ./go.mod
-                  ./go.sum
-                  (fileset.maybeMissing ./vendor)
-                  (fileset.fileFilter (file: file.hasExt "go") ./.)
-                ];
-              };
-              goSum = ./go.sum;
-              vendorHash = null;
+        packages.default = pkgs.buildGoModule (
+          final: with pkgs.lib; {
+            pname = "go-template";
+            version = "0.6.3";
 
-              meta = {
-                mainProgram = "go-template";
-                description = "go template";
-                license = licenses.mit;
-                platforms = platforms.all;
-                homepage = "https://github.com/spotdemo4/go-template";
-                changelog = "https://github.com/spotdemo4/go-template/releases/tag/v${finalAttrs.version}";
-                downloadPage = "https://github.com/spotdemo4/go-template/releases/tag/v${finalAttrs.version}";
-              };
-            });
+            src = fileset.toSource {
+              root = ./.;
+              fileset = fileset.unions [
+                ./go.mod
+                ./go.sum
+                (fileset.fileFilter (file: file.hasExt "go") ./.)
+                (fileset.maybeMissing ./vendor)
+              ];
+            };
+            goSum = ./go.sum;
+            vendorHash = null;
+
+            meta = {
+              mainProgram = "go-template";
+              description = "go template";
+              license = licenses.mit;
+              platforms = platforms.all;
+              homepage = "https://github.com/spotdemo4/go-template";
+              changelog = "https://github.com/spotdemo4/go-template/releases/tag/v${final.version}";
+              downloadPage = "https://github.com/spotdemo4/go-template/releases/tag/v${final.version}";
+            };
           }
         );
 
-        images = pkgs.mkImages pkgs (pkgs: {
-          default = pkgs.mkImage self.packages.${system}.default {
-            contents = with pkgs; [ dockerTools.caCertificates ];
-          };
-        });
+        images.default = pkgs.mkImage {
+          src = self.packages.${system}.default;
+          contents = with pkgs; [ dockerTools.caCertificates ];
+        };
 
-        formatter = pkgs.nixfmt-tree;
         schemas = trev.schemas;
       }
     );

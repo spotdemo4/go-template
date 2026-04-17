@@ -1,9 +1,0 @@
-#:schema https://json.schemastore.org/any.json
-#:tombi schema.strict = false
-
-enableAllRules = true
-ignoreGeneratedHeader = false
-severity = "warning"
-confidence = 0.8
-errorCode = 1
-warningCode = 1
