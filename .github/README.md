@@ -58,22 +58,22 @@ releases are automatically created for [significant](https://www.conventionalcom
 
 | OS      | Architecture | Download                                                                                                                                     |
 | ------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| Linux   | amd64        | [go-template_0.7.1_linux_amd64.xz](https://github.com/spotdemo4/go-template/releases/download/v0.7.1/go-template_0.7.1_linux_amd64.xz)       |
-| Linux   | arm64        | [go-template_0.7.1_linux_arm64.xz](https://github.com/spotdemo4/go-template/releases/download/v0.7.1/go-template_0.7.1_linux_arm64.xz)       |
-| Linux   | arm          | [go-template_0.7.1_linux_arm.xz](https://github.com/spotdemo4/go-template/releases/download/v0.7.1/go-template_0.7.1_linux_arm.xz)           |
-| MacOS   | arm64        | [go-template_0.7.1_darwin_arm64.xz](https://github.com/spotdemo4/go-template/releases/download/v0.7.1/go-template_0.7.1_darwin_arm64.xz)     |
-| Windows | amd64        | [go-template_0.7.1_windows_amd64.zip](https://github.com/spotdemo4/go-template/releases/download/v0.7.1/go-template_0.7.1_windows_amd64.zip) |
+| Linux   | amd64        | [go-template_0.7.2_linux_amd64.xz](https://github.com/spotdemo4/go-template/releases/download/v0.7.2/go-template_0.7.2_linux_amd64.xz)       |
+| Linux   | arm64        | [go-template_0.7.2_linux_arm64.xz](https://github.com/spotdemo4/go-template/releases/download/v0.7.2/go-template_0.7.2_linux_arm64.xz)       |
+| Linux   | arm          | [go-template_0.7.2_linux_arm.xz](https://github.com/spotdemo4/go-template/releases/download/v0.7.2/go-template_0.7.2_linux_arm.xz)           |
+| MacOS   | arm64        | [go-template_0.7.2_darwin_arm64.xz](https://github.com/spotdemo4/go-template/releases/download/v0.7.2/go-template_0.7.2_darwin_arm64.xz)     |
+| Windows | amd64        | [go-template_0.7.2_windows_amd64.zip](https://github.com/spotdemo4/go-template/releases/download/v0.7.2/go-template_0.7.2_windows_amd64.zip) |
 
 ### go
 
 ```elm
-go run github.com/spotdemo4/go-template@v0.7.1
+go run github.com/spotdemo4/go-template@v0.7.2
 ```
 
 ### docker
 
 ```elm
-docker run ghcr.io/spotdemo4/go-template:0.7.1
+docker run ghcr.io/spotdemo4/go-template:0.7.2
 ```
 
 ### nix
