@@ -80,8 +80,8 @@
         };
 
         apps = pkgs.mkApps {
+          default = "go run .";
           dev = "air";
-          run = "go run .";
           vendor = "go mod tidy && go mod vendor";
         };
 

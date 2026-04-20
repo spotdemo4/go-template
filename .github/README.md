@@ -23,13 +23,13 @@ nix develop
 ### run
 
 ```elm
-nix run #dev
+nix run
 ```
 
-### build
+### format
 
 ```elm
-nix build
+nix fmt
 ```
 
 ### check
@@ -38,10 +38,10 @@ nix build
 nix flake check
 ```
 
-### format
+### build
 
 ```elm
-nix fmt
+nix build
 ```
 
 ### release
@@ -63,6 +63,12 @@ releases are automatically created for [significant](https://www.conventionalcom
 | Linux   | arm          | [go-template_0.7.1_linux_arm.xz](https://github.com/spotdemo4/go-template/releases/download/v0.7.1/go-template_0.7.1_linux_arm.xz)           |
 | MacOS   | arm64        | [go-template_0.7.1_darwin_arm64.xz](https://github.com/spotdemo4/go-template/releases/download/v0.7.1/go-template_0.7.1_darwin_arm64.xz)     |
 | Windows | amd64        | [go-template_0.7.1_windows_amd64.zip](https://github.com/spotdemo4/go-template/releases/download/v0.7.1/go-template_0.7.1_windows_amd64.zip) |
+
+### go
+
+```elm
+go run github.com/spotdemo4/go-template@v0.7.1
+```
 
 ### docker
 
