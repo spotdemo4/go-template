@@ -1,9 +1,29 @@
 {
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "files.associations": {
     "renovate.json": "jsonc",
     ".envrc.project": "dotenv",
     ".envrc": "dotenv"
+  },
+
+  // nix
+  "nix.enableLanguageServer": true,
+  "nix.serverPath": "nixd",
+  "nix.serverSettings": {
+    "nixd": {
+      "nixpkgs": {
+        "expr": "(builtins.getFlake (builtins.toString ./.)).outputs.nixpkgs.${builtins.currentSystem}"
+      }
+    }
+  },
+  "[nix]": {
+    "editor.defaultFormatter": "jnoortheen.nix-ide"
+  },
+
+  // json
+  "json.schemaDownload.trustedDomains": {
+    "https://docs.renovatebot.com/": true
   },
 
   // go
@@ -12,23 +32,8 @@
     "editor.defaultFormatter": "golang.go"
   },
 
-  // nix
-  "nix.enableLanguageServer": true,
-  "nix.serverPath": "nixd",
-  "[nix]": {
-    "editor.defaultFormatter": "jnoortheen.nix-ide"
-  },
-
   // toml
   "[toml]": {
     "editor.defaultFormatter": "tombi-toml.tombi"
-  },
-
-  // actions
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-
-  // json
-  "json.schemaDownload.trustedDomains": {
-    "https://docs.renovatebot.com/": true
   }
 }

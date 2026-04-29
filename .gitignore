@@ -2,10 +2,10 @@
 /.envrc
 /docker-compose*
 
-# build
-/build/
-/tmp/
-
 # nix
 /result*
 /.direnv/
+
+# build
+/build/
+/tmp/

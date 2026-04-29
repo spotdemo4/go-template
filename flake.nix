@@ -28,6 +28,8 @@
     }:
     trev.libs.mkFlake (
       system: pkgs: {
+
+        # nix develop [#...]
         devShells = {
           default = pkgs.mkShell {
             shellHook = pkgs.shellhook.ref;
@@ -39,11 +41,13 @@
 
               # lint
               go-tools
+              nixd
 
               # format
+              treefmt
+              prettier
               nixfmt
               tombi
-              prettier
 
               # util
               air
@@ -72,38 +76,99 @@
 
           vulnerable = pkgs.mkShell {
             packages = with pkgs; [
-              govulncheck # go
               flake-checker # nix
               zizmor # actions
+              govulncheck # go
             ];
           };
         };
 
+        # nix run [#...]
         apps = pkgs.mkApps {
           default = "go run .";
           dev = "air";
           vendor = "go mod tidy && go mod vendor";
         };
 
-        checks = pkgs.mkChecks {
-          go = {
+        # nix build [#...]
+        packages = {
+          default = pkgs.buildGo125Module (
+            final: with pkgs.lib; {
+              pname = "go-template";
+              version = "0.7.2";
+
+              src = fileset.toSource {
+                root = ./.;
+                fileset = fileset.unions [
+                  ./go.mod
+                  ./go.sum
+                  (fileset.fileFilter (file: file.hasExt "go") ./.)
+                  (fileset.maybeMissing ./vendor)
+                ];
+              };
+              goSum = ./go.sum;
+              vendorHash = null;
+
+              meta = {
+                mainProgram = "go-template";
+                description = "go template";
+                license = licenses.mit;
+                platforms = platforms.all;
+                homepage = "https://github.com/spotdemo4/go-template";
+                changelog = "https://github.com/spotdemo4/go-template/releases/tag/v${final.version}";
+                downloadPage = "https://github.com/spotdemo4/go-template/releases/tag/v${final.version}";
+              };
+            }
+          );
+        };
+
+        # nix build #images.[...]
+        images = {
+          default = pkgs.mkImage {
             src = self.packages.${system}.default;
+          };
+        };
+
+        # nix fmt
+        formatter = pkgs.treefmt.withConfig {
+          configFile = ./treefmt.toml;
+          runtimeInputs = with pkgs; [
+            prettier
+            nixfmt
+            go
+            tombi
+          ];
+        };
+
+        # nix flake check
+        checks = pkgs.mkChecks {
+          prettier = {
+            root = ./.;
+            filter = file: file.hasExt "yaml" || file.hasExt "json" || file.hasExt "md";
+            ignore = pkgs.lib.fileset.maybeMissing ./vendor;
             packages = with pkgs; [
-              go-tools
+              prettier
             ];
-            script = ''
-              go test ./...
-              go vet ./...
-              staticcheck ./...
+            forEach = ''
+              prettier --check "$file"
+            '';
+          };
+
+          nix = {
+            root = ./.;
+            filter = file: file.hasExt "nix";
+            ignore = pkgs.lib.fileset.maybeMissing ./vendor;
+            packages = with pkgs; [
+              nixfmt
+            ];
+            forEach = ''
+              nixfmt --check "$file"
             '';
           };
 
           actions = {
-            root = ./.;
-            files = [
-              ./action.yaml
-              ./.github/workflows
-            ];
+            root = ./.github/workflows;
+            filter = file: file.hasExt "yaml";
             packages = with pkgs; [
               action-validator
               zizmor
@@ -125,27 +190,15 @@
             '';
           };
 
-          nix = {
-            root = ./.;
-            filter = file: file.hasExt "nix";
-            ignore = pkgs.lib.fileset.maybeMissing ./vendor;
+          go = {
+            src = self.packages.${system}.default;
             packages = with pkgs; [
-              nixfmt
+              go-tools
             ];
-            forEach = ''
-              nixfmt --check "$file"
-            '';
-          };
-
-          prettier = {
-            root = ./.;
-            filter = file: file.hasExt "yaml" || file.hasExt "json" || file.hasExt "md";
-            ignore = pkgs.lib.fileset.maybeMissing ./vendor;
-            packages = with pkgs; [
-              prettier
-            ];
-            forEach = ''
-              prettier --check "$file"
+            script = ''
+              go test ./...
+              go vet ./...
+              staticcheck ./...
             '';
           };
 
@@ -162,52 +215,6 @@
             '';
           };
         };
-
-        formatter = pkgs.treefmt.withConfig {
-          configFile = ./treefmt.toml;
-          runtimeInputs = with pkgs; [
-            go
-            nixfmt
-            tombi
-            prettier
-          ];
-        };
-
-        packages.default = pkgs.buildGo125Module (
-          final: with pkgs.lib; {
-            pname = "go-template";
-            version = "0.7.2";
-
-            src = fileset.toSource {
-              root = ./.;
-              fileset = fileset.unions [
-                ./go.mod
-                ./go.sum
-                (fileset.fileFilter (file: file.hasExt "go") ./.)
-                (fileset.maybeMissing ./vendor)
-              ];
-            };
-            goSum = ./go.sum;
-            vendorHash = null;
-
-            meta = {
-              mainProgram = "go-template";
-              description = "go template";
-              license = licenses.mit;
-              platforms = platforms.all;
-              homepage = "https://github.com/spotdemo4/go-template";
-              changelog = "https://github.com/spotdemo4/go-template/releases/tag/v${final.version}";
-              downloadPage = "https://github.com/spotdemo4/go-template/releases/tag/v${final.version}";
-            };
-          }
-        );
-
-        images.default = pkgs.mkImage {
-          src = self.packages.${system}.default;
-          contents = with pkgs; [ dockerTools.caCertificates ];
-        };
-
-        schemas = trev.schemas;
       }
     );
 }

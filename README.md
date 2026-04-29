@@ -47,7 +47,7 @@ nix build
 ### release
 
 ```elm
-bumper "action.yaml" ".github/README.md"
+bumper "README.md"
 ```
 
 releases are automatically created for [significant](https://www.conventionalcommits.org/en/v1.0.0/#summary) changes
@@ -80,10 +80,4 @@ docker run ghcr.io/spotdemo4/go-template:0.7.2
 
 ```elm
 nix run github:spotdemo4/go-template
-```
-
-### action
-
-```yaml
-- uses: spotdemo4/go-template@v0.6.1
 ```

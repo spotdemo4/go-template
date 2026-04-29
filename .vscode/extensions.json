@@ -1,8 +1,8 @@
 {
   "recommendations": [
-    "golang.go",
+    "esbenp.prettier-vscode",
     "jnoortheen.nix-ide",
-    "tombi-toml.tombi",
-    "esbenp.prettier-vscode"
+    "golang.go",
+    "tombi-toml.tombi"
   ]
 }
