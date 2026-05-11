@@ -6,13 +6,17 @@
   "requireConfig": "ignored",
   "platform": "github",
   "repositories": ["spotdemo4/go-template"],
+  "allowedCommands": ["fix-hash .#default"],
 
   // repository
   "extends": ["config:recommended"],
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true,
-    "schedule": ["* * * * 0"] // sunday
+    "schedule": ["* * * * 0"], // sunday
+    "postUpgradeTasks": {
+      "commands": ["fix-hash .#default"]
+    }
   },
   "nix": {
     "enabled": true
@@ -29,6 +33,12 @@
     {
       "matchManagers": ["github-actions"],
       "groupName": "github actions"
+    },
+    {
+      "matchManagers": ["gomod"],
+      "postUpgradeTasks": {
+        "commands": ["fix-hash .#default"]
+      }
     },
     {
       "matchManagers": ["gomod"],
