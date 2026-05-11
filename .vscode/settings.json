@@ -1,27 +1,50 @@
 {
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true,
   "files.associations": {
     "renovate.json": "jsonc",
     ".envrc.project": "dotenv",
     ".envrc": "dotenv"
   },
+
+  "explorer.fileNesting.patterns": {
+    ".envrc.project": ".envrc",
+    "flake.nix": "flake.lock,treefmt.toml",
+    "README.md": "*.md,LICENSE"
+  },
+
   "json.schemaDownload.trustedDomains": {
     "https://docs.renovatebot.com/": true
   },
 
-  // go
-  "gopls": { "ui.semanticTokens": true },
+  "chat.tools.terminal.autoApprove": {
+    // go
+    "go run": true,
+    "go mod tidy": true,
+
+    // nix
+    "nix fmt": true,
+    "nix build": true,
+    "nix flake check": true
+  },
+
+  // golang.go
   "[go]": {
     "editor.defaultFormatter": "golang.go"
   },
+  "go.buildTags": "dev",
+  "gopls": { "ui.semanticTokens": true },
 
-  // toml
-  "[toml]": {
-    "editor.defaultFormatter": "tombi-toml.tombi"
+  // oxc.oxc-vscode
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.oxc": "always" // oxlint
   },
 
-  // nix
+  // jnoortheen.nix-ide
+  "[nix]": {
+    "editor.defaultFormatter": "jnoortheen.nix-ide"
+  },
   "nix.enableLanguageServer": true,
   "nix.serverPath": "nixd",
   "nix.serverSettings": {
@@ -30,8 +53,5 @@
         "expr": "(builtins.getFlake (builtins.toString ./.)).outputs.nixpkgs.${builtins.currentSystem}"
       }
     }
-  },
-  "[nix]": {
-    "editor.defaultFormatter": "jnoortheen.nix-ide"
   }
 }

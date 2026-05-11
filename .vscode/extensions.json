@@ -1,3 +1,3 @@
 {
-  "recommendations": ["golang.go", "oxc.oxc-vscode", "tombi-toml.tombi", "jnoortheen.nix-ide"]
+  "recommendations": ["golang.go", "oxc.oxc-vscode", "jnoortheen.nix-ide", "tombi-toml.tombi"]
 }
