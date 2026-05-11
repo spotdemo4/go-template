@@ -144,8 +144,8 @@
           configFile = ./treefmt.toml;
           runtimeInputs = with pkgs; [
             go
-            oxfmt
             nixfmt
+            oxfmt
           ];
         };
 
