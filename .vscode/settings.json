@@ -33,10 +33,6 @@
   "go.buildTags": "dev",
   "gopls": { "ui.semanticTokens": true },
 
-  // oxc.oxc-vscode
-  "editor.defaultFormatter": "oxc.oxc-vscode",
-  "editor.formatOnSave": true,
-
   // jnoortheen.nix-ide
   "[nix]": {
     "editor.defaultFormatter": "jnoortheen.nix-ide"
@@ -49,5 +45,9 @@
         "expr": "(builtins.getFlake (builtins.toString ./.)).outputs.nixpkgs.${builtins.currentSystem}"
       }
     }
-  }
+  },
+
+  // oxc.oxc-vscode
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnSave": true
 }

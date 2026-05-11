@@ -4,18 +4,18 @@
     "Shell Script": [".envrc*"]
   },
   "lsp": {
+    "nixd": {
+      "settings": {
+        "nixpkgs": {
+          "expr": "(builtins.getFlake (builtins.toString ./.)).outputs.nixpkgs.${builtins.currentSystem}"
+        }
+      }
+    },
     "oxfmt": {
       "initialization_options": {
         "settings": {
           "fmt.configPath": null,
           "run": "onSave"
-        }
-      }
-    },
-    "nixd": {
-      "settings": {
-        "nixpkgs": {
-          "expr": "(builtins.getFlake (builtins.toString ./.)).outputs.nixpkgs.${builtins.currentSystem}"
         }
       }
     }
@@ -75,7 +75,7 @@
     },
     "TOML": {
       "format_on_save": "on",
-      "language_servers": ["tombi"],
+      "language_servers": ["tombi", "oxfmt"],
       "prettier": {
         "allowed": false
       },
