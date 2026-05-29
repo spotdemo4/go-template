@@ -4,7 +4,7 @@
 [![vulnerable](https://trev.zip/template/go/actions/workflows/vulnerable.yaml/badge.svg?branch=main&logo=forgejo&logoColor=%23bac2de&label=vulnerable&labelColor=%23313244)](https://trev.zip/template/go/actions?workflow=vulnerable.yaml)
 [![go](https://img.shields.io/github/go-mod/go-version/spotdemo4/go-template?logo=go&logoColor=%23bac2de&label=version&labelColor=%23313244&color=%2300ADD8)](https://go.dev/doc/devel/release)
 
-template for starting [Go](https://go.dev/) projects
+template for starting [go](https://go.dev/) projects
 
 part of [spotdemo4/templates](https://github.com/spotdemo4/templates)
 
