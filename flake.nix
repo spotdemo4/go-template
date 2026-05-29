@@ -78,7 +78,9 @@
 
           vulnerable = pkgs.mkShell {
             packages = with pkgs; [
-              govulncheck # go
+              # go
+              go
+              govulncheck
               flake-checker # nix
               zizmor # actions
             ];
