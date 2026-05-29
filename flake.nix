@@ -126,7 +126,7 @@
               '';
 
               meta = {
-                mainProgram = "go-template";
+                mainProgram = "go";
                 description = "go template";
                 license = licenses.mit;
                 platforms = platforms.all;
