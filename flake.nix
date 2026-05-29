@@ -124,9 +124,9 @@
                 description = "go template";
                 license = licenses.mit;
                 platforms = platforms.all;
-                homepage = "https://github.com/spotdemo4/go-template";
-                changelog = "https://github.com/spotdemo4/go-template/releases/tag/v${final.version}";
-                downloadPage = "https://github.com/spotdemo4/go-template/releases/tag/v${final.version}";
+                homepage = "https://trev.zip/template/go";
+                changelog = "https://trev.zip/template/go/releases/tag/v${final.version}";
+                downloadPage = "https://trev.zip/template/go/releases/tag/v${final.version}";
               };
             }
           );

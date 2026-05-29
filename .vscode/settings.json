@@ -15,17 +15,6 @@
     "https://docs.renovatebot.com/": true
   },
 
-  "chat.tools.terminal.autoApprove": {
-    // go
-    "go run": true,
-    "go mod tidy": true,
-
-    // nix
-    "nix fmt": true,
-    "nix build": true,
-    "nix flake check": true
-  },
-
   // golang.go
   "[go]": {
     "editor.defaultFormatter": "golang.go"

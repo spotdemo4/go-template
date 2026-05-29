@@ -1,9 +1,8 @@
 # go template
 
-[![check](https://img.shields.io/github/actions/workflow/status/spotdemo4/go-template/check.yaml?branch=main&logo=github&logoColor=%23bac2de&label=check&labelColor=%23313244)](https://github.com/spotdemo4/go-template/actions/workflows/check.yaml)
-[![vulnerable](https://img.shields.io/github/actions/workflow/status/spotdemo4/go-template/vulnerable.yaml?branch=main&logo=github&logoColor=%23bac2de&label=vulnerable&labelColor=%23313244)](https://github.com/spotdemo4/go-template/actions/workflows/vulnerable.yaml)
+[![check](https://trev.zip/template/go/actions/workflows/check.yaml/badge.svg?branch=main&logo=forgejo&logoColor=%23bac2de&label=check&labelColor=%23313244)](https://trev.zip/template/go/actions?workflow=check.yaml)
+[![vulnerable](https://trev.zip/template/go/actions/workflows/vulnerable.yaml/badge.svg?branch=main&logo=forgejo&logoColor=%23bac2de&label=vulnerable&labelColor=%23313244)](https://trev.zip/template/go/actions?workflow=vulnerable.yaml)
 [![go](https://img.shields.io/github/go-mod/go-version/spotdemo4/go-template?logo=go&logoColor=%23bac2de&label=version&labelColor=%23313244&color=%2300ADD8)](https://go.dev/doc/devel/release)
-[![flakehub](https://img.shields.io/endpoint?url=https://flakehub.com/f/spotdemo4/go-template/badge&labelColor=%23313244)](https://flakehub.com/flake/spotdemo4/go-template)
 
 template for starting [Go](https://go.dev/) projects
 
@@ -15,37 +14,37 @@ part of [spotdemo4/templates](https://github.com/spotdemo4/templates)
 
 ## getting started
 
-```elm
+```sh
 nix develop
 ```
 
 ### run
 
-```elm
+```sh
 nix run #dev
 ```
 
 ### format
 
-```elm
+```sh
 nix fmt
 ```
 
 ### check
 
-```elm
+```sh
 nix flake check
 ```
 
 ### build
 
-```elm
+```sh
 nix build
 ```
 
 ### release
 
-```elm
+```sh
 bumper "README.md"
 ```
 
@@ -53,30 +52,24 @@ releases are automatically created for [significant](https://www.conventionalcom
 
 ## use
 
-### download
-
-| OS      | Architecture | Download                                                                                                                                     |
-| ------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| Linux   | amd64        | [go-template_0.9.0_linux_amd64](https://github.com/spotdemo4/go-template/releases/download/v0.9.0/go-template_0.9.0_linux_amd64)             |
-| Linux   | arm64        | [go-template_0.9.0_linux_arm64](https://github.com/spotdemo4/go-template/releases/download/v0.9.0/go-template_0.9.0_linux_arm64)             |
-| Linux   | arm          | [go-template_0.9.0_linux_arm](https://github.com/spotdemo4/go-template/releases/download/v0.9.0/go-template_0.9.0_linux_arm)                 |
-| MacOS   | arm64        | [go-template_0.9.0_darwin_arm64](https://github.com/spotdemo4/go-template/releases/download/v0.9.0/go-template_0.9.0_darwin_arm64)           |
-| Windows | amd64        | [go-template_0.9.0_windows_amd64.exe](https://github.com/spotdemo4/go-template/releases/download/v0.9.0/go-template_0.9.0_windows_amd64.exe) |
-
 ### go
 
-```elm
-go run github.com/spotdemo4/go-template@v0.9.0
+```sh
+go run trev.zip/template/go
 ```
 
 ### docker
 
-```elm
-docker run ghcr.io/spotdemo4/go-template:0.9.0
+```sh
+docker run trev.zip/template/go:latest
 ```
 
 ### nix
 
-```elm
-nix run github:spotdemo4/go-template
+```sh
+nix run git+https://trev.zip/template/go.git
 ```
+
+### download
+
+https://trev.zip/template/go/releases

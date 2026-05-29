@@ -1,4 +1,4 @@
-module github.com/spotdemo4/go-template
+module trev.zip/template/go
 
 go 1.25.10
 
