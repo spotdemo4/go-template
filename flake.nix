@@ -64,7 +64,11 @@
 
           release = pkgs.mkShell {
             packages = with pkgs; [
+              curl
               flake-release
+              git
+              go
+              jq
             ];
           };
 
