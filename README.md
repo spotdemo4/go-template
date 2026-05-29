@@ -55,6 +55,11 @@ releases are automatically created for [significant](https://www.conventionalcom
 ### go
 
 ```sh
+GOPROXY=https://trev.zip/api/packages/template/go \
+    go install trev.zip/template/go@v0.9.1
+```
+
+```sh
 go run trev.zip/template/go
 ```
 
