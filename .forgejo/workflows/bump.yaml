@@ -14,9 +14,6 @@ on:
           - "true"
           - "false"
 
-concurrency:
-  group: release
-
 # yaml-language-server-disable is not allowed
 enable-openid-connect: true
 
