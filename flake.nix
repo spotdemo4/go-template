@@ -176,7 +176,7 @@
             '';
           };
 
-          actions = {
+          actions-gh = {
             root = ./.github/workflows;
             filter = file: file.hasExt "yaml";
             packages = with pkgs; [
@@ -185,6 +185,17 @@
             ];
             script = ''
               action-validator "$file"
+              zizmor --offline "$file"
+            '';
+          };
+
+          actions-fj = {
+            root = ./.forgejo/workflows;
+            filter = file: file.hasExt "yaml";
+            packages = with pkgs; [
+              zizmor
+            ];
+            script = ''
               zizmor --offline "$file"
             '';
           };
