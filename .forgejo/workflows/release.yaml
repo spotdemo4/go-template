@@ -63,5 +63,5 @@ jobs:
             --upload-file "${archive}" \
             "${FORGEJO_GO_UPLOAD_URL}"
         env:
-          FORGEJO_GO_UPLOAD_URL: https://trev.zip/api/packages/template/go/upload
+          FORGEJO_GO_UPLOAD_URL: ${{ forgejo.SERVER_URL }}/api/packages/${{ forgejo.REPOSITORY_OWNER }}/go/upload
           FORGEJO_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
