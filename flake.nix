@@ -131,7 +131,7 @@
                 license = licenses.mit;
                 platforms = platforms.all;
                 homepage = "https://trev.zip/template/go";
-                changelog = "https://trev.zip/template/go/releases/tag/v${final.version}";
+                changelog = "https://trev.zip/template/go/releases";
                 downloadPage = "https://trev.zip/template/go/releases/tag/v${final.version}";
               };
             }
