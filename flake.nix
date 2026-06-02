@@ -117,12 +117,14 @@
 
               nativeCheckInputs = with pkgs; [
                 go-tools
+                gotools
               ];
               checkPhase = ''
                 export HOME=$(mktemp -d)
                 go test ./...
                 go vet ./...
                 staticcheck ./...
+                modernize ./...
               '';
 
               meta = {
