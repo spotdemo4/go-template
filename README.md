@@ -21,7 +21,7 @@ nix develop
 ### run
 
 ```sh
-nix run #dev
+nix run .#dev
 ```
 
 ### format

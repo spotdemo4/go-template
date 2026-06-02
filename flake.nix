@@ -98,7 +98,7 @@
 
         # nix build [#...]
         packages = {
-          default = pkgs.buildGo125Module (
+          default = pkgs.buildGoModule (
             final: with pkgs.lib; {
               pname = "go-template";
               version = "0.9.1";
@@ -126,7 +126,7 @@
               '';
 
               meta = {
-                mainProgram = "go";
+                mainProgram = "go-template";
                 description = "go template";
                 license = licenses.mit;
                 platforms = platforms.all;
