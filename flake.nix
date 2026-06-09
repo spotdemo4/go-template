@@ -64,8 +64,10 @@
 
           release = pkgs.mkShell {
             packages = with pkgs; [
+              flake-release # release to GitHub/Forgejo
+
+              # release to proxy
               curl
-              flake-release
               git
               go
               jq
@@ -75,7 +77,7 @@
           update = pkgs.mkShell {
             packages = with pkgs; [
               renovate
-              go # go mod vendor
+              go # go mod tidy
               fix-hash # vendorHash
             ];
           };
