@@ -2,7 +2,7 @@
 
 [![check](https://trev.zip/template/go/actions/workflows/check.yaml/badge.svg?branch=main&logo=forgejo&logoColor=%23bac2de&label=check&labelColor=%23313244)](https://trev.zip/template/go/actions?workflow=check.yaml)
 [![vulnerable](https://trev.zip/template/go/actions/workflows/vulnerable.yaml/badge.svg?branch=main&logo=forgejo&logoColor=%23bac2de&label=vulnerable&labelColor=%23313244)](https://trev.zip/template/go/actions?workflow=vulnerable.yaml)
-[![go](<https://img.shields.io/badge/dynamic/regex?url=https%3A%2F%2Ftrev.zip%2Ftemplate%2Fgo%2Fraw%2Fbranch%2Fmain%2Fgo.mod&search=toolchain%20go(.*)&replace=%241&logo=go&logoColor=%23bac2de&label=version&labelColor=%23313244&color=%2300ADD8>)](https://go.dev/doc/devel/release)
+[![go](<https://img.shields.io/badge/dynamic/regex?url=https://trev.zip/template/go/raw/branch/main/go.mod&search=toolchain%20go(.*)&replace=%241&logo=go&logoColor=%23bac2de&label=version&labelColor=%23313244&color=%2300ADD8>)](https://go.dev/doc/devel/release)
 
 template for starting [go](https://go.dev/) projects
 
