@@ -169,7 +169,6 @@
           nix = {
             root = ./.;
             filter = file: file.hasExt "nix";
-            ignore = pkgs.lib.fileset.maybeMissing ./vendor;
             packages = with pkgs; [
               nixfmt
             ];
