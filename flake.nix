@@ -114,7 +114,6 @@
                 ];
               };
               goSum = ./go.sum;
-              proxyVendor = true;
               vendorHash = null;
 
               nativeCheckInputs = with pkgs; [
