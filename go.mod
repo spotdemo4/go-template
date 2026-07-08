@@ -2,4 +2,4 @@ module trev.zip/template/go
 
 go 1.26
 
-toolchain go1.26.4
+toolchain go1.26.5
