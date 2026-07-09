@@ -43,6 +43,11 @@
       "postUpgradeTasks": {
         "commands": ["fix-hash .#default"]
       }
+    },
+    {
+      "matchManagers": ["gomod"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "go modules"
     }
   ]
 }
