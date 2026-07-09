@@ -21,7 +21,8 @@
     "schedule": ["* * * * 0"], // sunday
     "skipInstalls": false,
     "postUpgradeTasks": {
-      "commands": ["fix-hash .#default"]
+      "commands": ["fix-hash .#default"],
+      "executionMode": "branch"
     }
   },
   "packageRules": [
@@ -41,12 +42,13 @@
       "matchManagers": ["gomod"],
       "addLabels": ["go"],
       "postUpgradeTasks": {
-        "commands": ["fix-hash .#default"]
+        "commands": ["fix-hash .#default"],
+        "executionMode": "branch"
       }
     },
     {
       "matchManagers": ["gomod"],
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
       "groupName": "go modules"
     }
   ]

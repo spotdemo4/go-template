@@ -15,7 +15,8 @@
     "automerge": true,
     "schedule": ["* * * * 0"], // sunday
     "postUpgradeTasks": {
-      "commands": ["fix-hash .#default"]
+      "commands": ["fix-hash .#default"],
+      "executionMode": "branch"
     }
   },
   "nix": {
@@ -37,12 +38,13 @@
     {
       "matchManagers": ["gomod"],
       "postUpgradeTasks": {
-        "commands": ["fix-hash .#default"]
+        "commands": ["fix-hash .#default"],
+        "executionMode": "branch"
       }
     },
     {
       "matchManagers": ["gomod"],
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
       "groupName": "go modules"
     }
   ]
