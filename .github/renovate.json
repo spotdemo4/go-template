@@ -6,7 +6,7 @@
   "requireConfig": "ignored",
   "platform": "github",
   "repositories": ["spotdemo4/go-template"],
-  "allowedCommands": ["fix-hash .#default"],
+  "allowedCommands": ["^fix-hash \\.#default$"],
 
   // repository
   "extends": ["config:recommended"],
