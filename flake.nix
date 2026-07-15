@@ -95,7 +95,12 @@
 
         # nix run [#...]
         apps = pkgs.mkApps {
-          dev = "go run .";
+          dev = {
+            script = "go run .";
+            packages = with pkgs; [
+              go
+            ];
+          };
         };
 
         # nix build [#...]
