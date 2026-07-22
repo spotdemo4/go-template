@@ -38,19 +38,20 @@
               go
               gopls
               gotools
-
-              # lint
               go-tools
-              oxlint
+
+              vscode-json-languageserver # json
+              yaml-language-server # yaml
+              tombi # toml
+              oxfmt # format
+
+              # nix
               nixd
               nil
-
-              # format
-              oxfmt
               nixfmt
-              treefmt
 
               # util
+              treefmt
               bumper
               fix-hash
             ];
