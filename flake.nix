@@ -94,16 +94,6 @@
           };
         };
 
-        # nix run [#...]
-        apps = pkgs.mkApps {
-          dev = {
-            script = "go run .";
-            packages = with pkgs; [
-              go
-            ];
-          };
-        };
-
         # nix build [#...]
         packages = {
           default = pkgs.buildGoModule (
