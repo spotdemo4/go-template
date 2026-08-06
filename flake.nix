@@ -115,10 +115,12 @@
                 go-tools
               ];
               checkPhase = ''
+                runHook preCheck
                 export HOME=$(mktemp -d)
                 GOTOOLCHAIN=local go test ./...
                 GOTOOLCHAIN=local go vet ./...
                 GOTOOLCHAIN=local staticcheck ./...
+                runHook postCheck
               '';
 
               meta = {
@@ -156,7 +158,9 @@
           go = self.packages.${system}.default.overrideAttrs {
             dontBuild = true;
             installPhase = ''
+              runHook preInstall
               touch $out
+              runHook postInstall
             '';
           };
 
