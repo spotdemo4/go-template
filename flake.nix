@@ -116,10 +116,9 @@
               ];
               checkPhase = ''
                 export HOME=$(mktemp -d)
-                go test ./...
-                go vet ./...
-                staticcheck ./...
-                go fix -diff ./...
+                GOTOOLCHAIN=local go test ./...
+                GOTOOLCHAIN=local go vet ./...
+                GOTOOLCHAIN=local staticcheck ./...
               '';
 
               meta = {
@@ -158,6 +157,25 @@
             dontBuild = true;
             installPhase = ''
               touch $out
+            '';
+          };
+
+          gofix = {
+            root = ./.;
+            filter = file: file.hasExt "go";
+            include = [
+              ./go.mod
+              ./go.sum
+            ];
+            packages = with pkgs; [
+              go
+            ];
+            script = ''
+              diff_out=$(GOTOOLCHAIN=local go fix -diff ./...)
+              if [ -n "$diff_out" ]; then
+                echo "$diff_out"
+                exit 1
+              fi
             '';
           };
 
