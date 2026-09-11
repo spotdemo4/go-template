@@ -15,9 +15,12 @@ permissions:
 
 jobs:
   check:
-    runs-on: ubuntu-24.04
-    permissions:
-      id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-26]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
     steps:
       - name: Initialize
         uses: spotdemo4/nix-init@c7537bc73ce11ca01e53bd9d119d6e46363f9888 # v1.65.0

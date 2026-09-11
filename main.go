@@ -1,12 +1,12 @@
 // main.go
 package main
 
-import "log"
+import "fmt"
 
 func main() {
-	log.Println(hello())
+	fmt.Println(hello())
 }
 
 func hello() string {
-	return "Hello, World!"
+	return "Hello, world!"
 }

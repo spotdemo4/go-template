@@ -124,6 +124,12 @@
                 runHook postCheck
               '';
 
+              installCheckPhase = ''
+                runHook preInstallCheck
+                test "$("$out/bin/go")" = "Hello, world!"
+                runHook postInstallCheck
+              '';
+
               meta = {
                 mainProgram = "go";
                 description = "go template";
@@ -156,14 +162,7 @@
 
         # nix flake check
         checks = pkgs.mkChecks {
-          go = self.packages.${system}.default.overrideAttrs {
-            dontBuild = true;
-            installPhase = ''
-              runHook preInstall
-              touch $out
-              runHook postInstall
-            '';
-          };
+          inherit (self.packages.${system}) default;
 
           nix = {
             root = ./.;
