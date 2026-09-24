@@ -178,7 +178,7 @@ old_url=https://trev.zip/template/go
 replace_literal "$old_slug" "$slug" flake.nix
 replace_literal 'mainProgram = "go"' "mainProgram = \"$slug\"" flake.nix
 replace_literal 'trev.zip/template/go' "$provider_host/$repo_path" go.mod
-replace_literal '0.9.2' "$version" flake.nix
+sed -i -E "/^[[:space:]]*pname = \"$slug\";$/,/^[[:space:]]*version = /s@^([[:space:]]*version = \")[^\"]*@\1$version@" flake.nix
 replace_literal "$old_description" "$nix_description" flake.nix
 replace_literal "$old_url" "$web_url" flake.nix
 replace_literal 'Copyright (c) 2026 trev' "Copyright (c) $year $git_name" LICENSE
