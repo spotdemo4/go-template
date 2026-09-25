@@ -10,7 +10,20 @@
 nix develop
 ```
 
+with [direnv](https://direnv.net/):
+
+```sh
+ln -s .envrc.project .envrc
+direnv allow
+```
+
 ### run
+
+```sh
+nix run
+```
+
+with [go](https://go.dev/):
 
 ```sh
 go run .
@@ -22,10 +35,25 @@ go run .
 nix fmt
 ```
 
+with [gofmt](https://pkg.go.dev/cmd/gofmt):
+
+```sh
+gofmt -w .
+```
+
 ### check
 
 ```sh
 nix flake check
+```
+
+with [go](https://go.dev/) and [staticcheck](https://staticcheck.dev/):
+
+```sh
+go test ./...
+go vet ./...
+staticcheck ./...
+go fix -diff ./...
 ```
 
 ### build
@@ -34,7 +62,15 @@ nix flake check
 nix build
 ```
 
+with [go](https://go.dev/):
+
+```sh
+go build ./...
+```
+
 ### release
+
+with [bumper](https://trev.zip/llc/bumper):
 
 ```sh
 bumper
