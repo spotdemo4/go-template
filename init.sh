@@ -202,10 +202,25 @@ encoded_lock_url=${encoded_lock_url//\//%252F}
 nixpkgs_badge="[![nixpkgs](https://img.shields.io/endpoint?url=https%3A%2F%2Fnix-shield.trev.zip%2Fbadge%3Furl%3D${encoded_lock_url}%26input%3Dnixpkgs&logoColor=%23bac2de&labelColor=%23313244&color=%235277C3)](https://nixos.org/)"
 language_badge="[![go](<https://img.shields.io/badge/dynamic/regex?url=${raw_url}/go.mod&search=toolchain%20go(.*)&replace=%241&logo=go&logoColor=%23bac2de&label=version&labelColor=%23313244&color=%2300ADD8>)](https://go.dev/doc/devel/release)"
 
+readme_sections=$(sed -n '/^## using$/,$p' README.md)
+readme_sections=${readme_sections//"$old_url"/"$web_url"}
+old_go_install=$'GOPROXY=https://trev.zip/api/packages/template/go \\\n    go install trev.zip/template/go@latest'
+if $is_github; then
+  go_install="go install $provider_host/$repo_path@latest"
+  image="ghcr.io/${repo_path,,}:latest"
+else
+  owner=${repo_path%%/*}
+  go_install="GOPROXY=${web_url%/$repo_path}/api/packages/$owner/go"$' \\\n    go install '"$provider_host/$repo_path@latest"
+  image="$host/${repo_path,,}:latest"
+fi
+readme_sections=${readme_sections//"$old_go_install"/"$go_install"}
+readme_sections=${readme_sections//trev.zip\/template\/go:latest/"$image"}
+readme_sections=${readme_sections//"go run trev.zip/template/go@latest"/"go run $provider_host/$repo_path@latest"}
+
 {
   printf '# %s\n\n' "$title"
   printf '%s\n%s\n%s\n%s\n\n' "$check_badge" "$vulnerable_badge" "$nixpkgs_badge" "$language_badge"
-  printf '%s\n' "$description"
+  printf '%s\n\n%s\n' "$description" "$readme_sections"
 } >README.md
 
 remove_checks() {
