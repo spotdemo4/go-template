@@ -111,19 +111,14 @@
               goSum = ./go.sum;
               vendorHash = null;
 
-              nativeCheckInputs = with pkgs; [
-                go-tools
-              ];
+              doCheck = true;
               checkPhase = ''
                 runHook preCheck
-                export HOME=$(mktemp -d)
                 go test ./...
-                go vet ./...
-                staticcheck ./...
-                go fix -diff ./...
                 runHook postCheck
               '';
 
+              doInstallCheck = true;
               installCheckPhase = ''
                 runHook preInstallCheck
                 test "$("$out/bin/go")" = "Hello, world!"
@@ -163,6 +158,16 @@
         # nix flake check
         checks = pkgs.mkChecks {
           inherit (self.packages.${system}) default;
+
+          go = {
+            src = self.packages.${system}.default;
+            packages = with pkgs; [ go-tools ];
+            script = ''
+              go vet ./...
+              staticcheck ./...
+              go fix -diff ./...
+            '';
+          };
 
           nix = {
             root = ./.;
