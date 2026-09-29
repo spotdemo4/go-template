@@ -95,7 +95,7 @@
 
         # nix build [#...]
         packages = {
-          default = pkgs.buildGoModule (
+          default = pkgs.mkGoModule (
             final: with pkgs.lib; {
               pname = "go-template";
               version = "0.13.0";
