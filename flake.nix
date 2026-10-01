@@ -64,13 +64,7 @@
 
           release = pkgs.mkShell {
             packages = with pkgs; [
-              flake-release # release to GitHub/Forgejo
-
-              # release to proxy
-              curl
-              git
-              go
-              jq
+              flake-release
             ];
           };
 
@@ -84,9 +78,8 @@
 
           vulnerable = pkgs.mkShell {
             packages = with pkgs; [
-              # go
               go
-              govulncheck
+              govulncheck # go
               flake-checker # nix
               zizmor # actions
             ];
