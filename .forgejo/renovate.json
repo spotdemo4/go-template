@@ -41,7 +41,7 @@
     {
       "matchManagers": ["gomod"],
       "addLabels": ["go"],
-      "postUpdateOptions": ["gomodTidy"],
+      "postUpdateOptions": ["gomodTidy", "gomodUpdateImportPaths"],
       "postUpgradeTasks": {
         "commands": ["fix-hash .#default"],
         "executionMode": "branch"
