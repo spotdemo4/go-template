@@ -33,6 +33,7 @@
         devShells = {
           default = pkgs.mkShell {
             shellHook = pkgs.shellhook.ref;
+            env.GOTOOLCHAIN = "local";
             packages = with pkgs; [
               # go
               go
