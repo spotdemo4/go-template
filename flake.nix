@@ -115,7 +115,7 @@
               doInstallCheck = true;
               installCheckPhase = ''
                 runHook preInstallCheck
-                test "$("$out/bin/go")" = "Hello, world!"
+                test "$("$out/bin/${final.meta.mainProgram}")" = "Hello, world!"
                 runHook postInstallCheck
               '';
 
@@ -136,6 +136,25 @@
         images = {
           default = pkgs.mkImage {
             src = self.packages.${system}.default;
+          };
+        };
+
+        # nix flake init -t git+https://trev.zip/template/go
+        templates = {
+          default = {
+            path = ./.;
+            description = "go template";
+            welcomeText = ''
+              # go template
+
+              `init.sh` requires a git repository with an `origin` remote:
+
+              ```sh
+              git init
+              git remote add origin <url>
+              bash init.sh "Title" "Description"
+              ```
+            '';
           };
         };
 
