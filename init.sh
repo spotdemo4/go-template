@@ -171,10 +171,37 @@ escape_string() {
 escaped_description=$(escape_string "$description")
 nix_description=$(printf '%s' "$escaped_description" | sed 's/${/\\${/g')
 
-changes_started=true
 old_slug=go-template
 old_description='go template'
 old_url=https://trev.zip/template/go
+
+# Find the template commit this project started from. Repositories created with
+# "use this template" have a new commit, but its tree matches the template's.
+template_commit=
+if GIT_TERMINAL_PROMPT=0 git fetch --quiet --no-tags "$old_url" main 2>/dev/null; then
+  declare -A template_trees=()
+  while read -r commit tree; do
+    if [[ ! -v template_trees[$tree] ]]; then
+      template_trees[$tree]=$commit
+    fi
+  done < <(git log --format='%H %T' FETCH_HEAD)
+  while read -r tree; do
+    if [[ -v template_trees[$tree] ]]; then
+      template_commit=${template_trees[$tree]}
+      break
+    fi
+  done < <(git log --format='%T' HEAD)
+fi
+
+changes_started=true
+rm template.schema.json
+if [[ -n $template_commit ]]; then
+  printf '{ "$schema": "%s", "url": "%s", "commit": "%s" }\n' \
+    "$old_url/raw/branch/main/template.schema.json" "$old_url" "$template_commit" >.template.json
+else
+  printf 'Warning: unable to find the template commit; .template.json was not created.\n' >&2
+fi
+
 replace_literal "$old_slug" "$slug" flake.nix
 replace_literal 'mainProgram = "go"' "mainProgram = \"$slug\"" flake.nix
 replace_literal 'trev.zip/template/go' "$provider_host/$repo_path" go.mod
