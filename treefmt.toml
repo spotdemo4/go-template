@@ -1,8 +1,8 @@
 #:schema https://www.schemastore.org/treefmt.json
 
-[formatter.gofmt]
-command = "gofmt"
-options = ["-w"]
+[formatter.golangci-lint]
+command = "golangci-lint"
+options = ["fmt"]
 includes = ["*.go"]
 
 [formatter.nixfmt]

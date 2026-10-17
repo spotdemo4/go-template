@@ -39,7 +39,7 @@
               go
               gopls
               gotools
-              go-tools
+              golangci-lint
 
               vscode-json-languageserver # json
               yaml-language-server # yaml
@@ -162,7 +162,7 @@
         formatter = pkgs.treefmt.withConfig {
           configFile = ./treefmt.toml;
           runtimeInputs = with pkgs; [
-            go
+            golangci-lint
             nixfmt
             oxfmt
           ];
@@ -174,12 +174,10 @@
 
           go = {
             src = self.packages.${system}.default;
-            packages = with pkgs; [ go-tools ];
+            packages = with pkgs; [ golangci-lint ];
             script = ''
-              test -z "$(go fmt ./... | tee /dev/stderr)"
-              go vet ./...
-              staticcheck ./...
-              go fix -diff ./...
+              cp ${./.golangci.yml} .golangci.yml
+              golangci-lint run ./...
             '';
           };
 
