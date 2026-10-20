@@ -172,7 +172,7 @@
         checks = pkgs.mkChecks {
           inherit (self.packages.${system}) default;
 
-          go = {
+          go-lint = {
             src = self.packages.${system}.default;
             packages = with pkgs; [ golangci-lint ];
             script = ''
