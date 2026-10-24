@@ -120,7 +120,7 @@
               '';
 
               meta = {
-                mainProgram = "go";
+                mainProgram = "go-template";
                 description = "go template";
                 license = licenses.mit;
                 platforms = platforms.all;
