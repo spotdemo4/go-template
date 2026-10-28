@@ -176,7 +176,7 @@
             src = self.packages.${system}.default;
             packages = with pkgs; [ golangci-lint ];
             script = ''
-              cp ${./.golangci.yml} .golangci.yml
+              cp ${./.golangci.yaml} .golangci.yaml
               golangci-lint run ./...
             '';
           };
