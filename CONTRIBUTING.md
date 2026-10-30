@@ -66,6 +66,14 @@ with [go](https://go.dev/):
 go build ./...
 ```
 
+### dependencies
+
+after changing `go.mod`, update `gomod2nix.toml` with [gomod2nix](https://github.com/nix-community/gomod2nix):
+
+```sh
+gomod2nix generate --with-deps
+```
+
 ### release
 
 with [bumper](https://trev.zip/llc/bumper):

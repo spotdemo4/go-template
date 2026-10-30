@@ -6,7 +6,7 @@
   "requireConfig": "ignored",
   "platform": "github",
   "repositories": ["spotdemo4/go-template"],
-  "allowedCommands": ["^fix-hash \\.#default$"],
+  "allowedCommands": ["^gomod2nix generate --with-deps$"],
 
   // repository
   "extends": ["config:recommended"],
@@ -18,11 +18,7 @@
     "enabled": true,
     "automerge": true,
     "schedule": ["* * * * 0"], // sunday
-    "skipInstalls": false,
-    "postUpgradeTasks": {
-      "commands": ["fix-hash .#default"],
-      "executionMode": "branch"
-    }
+    "skipInstalls": false
   },
   "customManagers": [
     {
@@ -58,15 +54,11 @@
       "matchManagers": ["gomod"],
       "addLabels": ["go"],
       "postUpdateOptions": ["gomodTidy", "gomodUpdateImportPaths"],
+      // gomod2nix.toml has an entry per module, so updates do not conflict
       "postUpgradeTasks": {
-        "commands": ["fix-hash .#default"],
+        "commands": ["gomod2nix generate --with-deps"],
         "executionMode": "branch"
       }
-    },
-    {
-      "matchManagers": ["gomod"],
-      "matchUpdateTypes": ["minor", "patch", "digest"],
-      "groupName": "go modules"
     },
     {
       // replaced by the nixpkgs-unstable custom manager

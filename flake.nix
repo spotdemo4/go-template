@@ -18,12 +18,18 @@
       inputs.systems.follows = "systems";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    gomod2nix = {
+      url = "github:nix-community/gomod2nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.inputs.systems.follows = "systems";
+    };
   };
 
   outputs =
     {
       self,
       trevpkgs,
+      gomod2nix,
       ...
     }:
     trevpkgs.libs.mkFlake (
@@ -53,7 +59,7 @@
               # util
               treefmt
               bumper
-              fix-hash
+              gomod2nix.packages.${system}.default
             ];
           };
 
@@ -73,7 +79,7 @@
             packages = with pkgs; [
               renovate
               go # go mod tidy
-              fix-hash # vendorHash
+              gomod2nix.packages.${system}.default # gomod2nix.toml
             ];
           };
 
@@ -103,7 +109,7 @@
                 ];
               };
               goSum = ./go.sum;
-              vendorHash = null;
+              modules = ./gomod2nix.toml;
 
               doCheck = true;
               checkPhase = ''
@@ -243,6 +249,7 @@
           config = {
             root = ./.;
             filter = file: file.hasExt "json" || file.hasExt "yaml" || file.hasExt "toml" || file.hasExt "md";
+            ignore = ./gomod2nix.toml; # generated
             packages = with pkgs; [
               oxfmt
             ];

@@ -13,3 +13,4 @@ includes = ["*.nix"]
 command = "oxfmt"
 options = ["--write"]
 includes = ["*.json", "*.yaml", "*.toml", "*.md"]
+excludes = ["gomod2nix.toml"] # generated
