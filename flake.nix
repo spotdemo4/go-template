@@ -79,7 +79,6 @@
             packages = with pkgs; [
               renovate
               go # go mod tidy
-              gomod2nix.packages.${system}.default # gomod2nix.toml
             ];
           };
 
@@ -90,6 +89,20 @@
               flake-checker # nix
               zizmor # actions
             ];
+          };
+        };
+
+        # nix run [#...]
+        apps = pkgs.mkApps {
+          update-deps = {
+            packages = with pkgs; [
+              go
+              gomod2nix.packages.${system}.default
+            ];
+            script = ''
+              go mod tidy
+              gomod2nix generate --with-deps
+            '';
           };
         };
 

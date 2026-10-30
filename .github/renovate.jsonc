@@ -6,7 +6,7 @@
   "requireConfig": "ignored",
   "platform": "github",
   "repositories": ["spotdemo4/go-template"],
-  "allowedCommands": ["^gomod2nix generate --with-deps$"],
+  "allowedCommands": ["^nix run \\.#update-deps$"],
 
   // repository
   "extends": ["config:recommended"],
@@ -53,10 +53,10 @@
     {
       "matchManagers": ["gomod"],
       "addLabels": ["go"],
-      "postUpdateOptions": ["gomodTidy", "gomodUpdateImportPaths"],
+      "postUpdateOptions": ["gomodUpdateImportPaths"],
       // gomod2nix.toml has an entry per module, so updates do not conflict
       "postUpgradeTasks": {
-        "commands": ["gomod2nix generate --with-deps"],
+        "commands": ["nix run .#update-deps"],
         "executionMode": "branch"
       }
     },
