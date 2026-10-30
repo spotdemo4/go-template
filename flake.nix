@@ -257,7 +257,6 @@
               || file.hasExt "yaml"
               || file.hasExt "toml"
               || file.hasExt "md";
-            ignore = ./gomod2nix.toml; # generated
             packages = with pkgs; [
               oxfmt
             ];
