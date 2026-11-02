@@ -340,9 +340,9 @@ EOF
     fi
   done
   if [[ -f .github/workflows/release.yaml ]]; then
-    # GitHub has no Go registry, so the release publishes to pkg.go.dev instead
-    sed -i -e '/^      packages: write$/d' \
-      -e 's/^\(          GITHUB_TOKEN: .*\)$/\1\n          PKG_GO_DEV_PUBLISHING: "true"/' .github/workflows/release.yaml
+    # GitHub has no Go registry, so the module is installed from Git. Setting
+    # PKG_GO_DEV_PUBLISHING opts in to publishing it to pkg.go.dev.
+    sed -i '/^      packages: write$/d' .github/workflows/release.yaml
   fi
   if [[ -f .forgejo/workflows/release.yaml ]]; then
     sed -i -E '/^          (CONTAINER_REGISTRY_PASSWORD|DELETE_OLD_RELEASE_ARTIFACTS): /d' .forgejo/workflows/release.yaml

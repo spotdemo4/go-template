@@ -189,6 +189,22 @@ test_library() (
   GOFLAGS=-mod=mod GOPROXY=off GOTOOLCHAIN=local go test ./...
 )
 
+test_library_github() (
+  local project=$tmp/hello-gh
+  new_project "$project" git@github.com:octo/hello-gh.git
+  cd "$project"
+  git add -A
+  git commit --quiet --message 'Initial commit'
+  printf '%s\n' y y n n | bash ./init.sh 'Hello GH' 'Says hello'
+
+  assert_initialized github.com/octo/hello-gh hello-gh test@example.com
+  assert_missing main.go .forgejo
+  assert_contains README.md 'go get github.com/octo/hello-gh@latest'
+  assert_lacks README.md GOPROXY 'go install' 'docker run'
+  assert_contains .github/workflows/release.yaml 'PACKAGES: packages.x86_64-linux.default'
+  assert_lacks .github/workflows/release.yaml 'packages: write' PKG_GO_DEV_PUBLISHING images.x86_64-linux
+)
+
 test_rollback() (
   local project=$tmp/rollback head
   new_project "$project" git@github.com:octo/rollback.git
@@ -221,7 +237,7 @@ chmod +x "$tmp/bin/nix"
 PATH=$tmp/bin:$PATH
 
 create_upstream
-for test in test_parse_remote test_slugify test_go_package test_nix_string test_application test_library test_rollback; do
+for test in test_parse_remote test_slugify test_go_package test_nix_string test_application test_library test_library_github test_rollback; do
   "$test"
   printf 'ok: %s\n' "$test"
 done
