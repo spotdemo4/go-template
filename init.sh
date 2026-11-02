@@ -207,23 +207,109 @@ if GIT_TERMINAL_PROMPT=0 git fetch --quiet --no-tags "$old_url" main 2>/dev/null
   done < <(git log --format='%T' HEAD)
 fi
 
+read -r -p 'Is this project a library? [y/N] ' reply || reply=
+if [[ $reply =~ ^[Yy]([Ee][Ss])?$ ]]; then
+  is_library=true
+  # Go package names can't contain hyphens, be keywords, or be main
+  package=${slug//-/}
+  case $package in
+    break | case | chan | const | continue | default | defer | else | fallthrough | for | func | go | goto | if | import | interface | main | map | package | range | return | select | struct | switch | type | var)
+      printf 'Title must produce a Go package name that is not a keyword or main.\n' >&2
+      exit 1
+      ;;
+  esac
+else
+  is_library=false
+fi
+
 changes_started=true
 rm template.schema.json
 sed -i '/^        # nix flake init /,/^        };$/d' flake.nix
 if [[ -n $template_commit ]]; then
-  printf '{ "$schema": "%s", "url": "%s", "commit": "%s" }\n' \
-    "$old_url/raw/branch/main/template.schema.json" "$old_url" "$template_commit" >.template.json
+  library_field=
+  if $is_library; then
+    library_field=', "library": true'
+  fi
+  printf '{ "$schema": "%s", "url": "%s", "commit": "%s"%s }\n' \
+    "$old_url/raw/branch/main/template.schema.json" "$old_url" "$template_commit" "$library_field" >.template.json
 else
   printf 'Warning: unable to find the template commit; .template.json was not created.\n' >&2
 fi
 
+module="$provider_host/$repo_path"
 replace_literal "$old_slug" "$slug" flake.nix
 replace_literal 'mainProgram = "go"' "mainProgram = \"$slug\"" flake.nix
-replace_literal 'trev.zip/template/go' "$provider_host/$repo_path" go.mod
+replace_literal 'trev.zip/template/go' "$module" go.mod
 sed -i -E "/^[[:space:]]*pname = \"$slug\";$/,/^[[:space:]]*version = /s@^([[:space:]]*version = \")[^\"]*@\1$version@" flake.nix
 replace_literal "$old_description" "$nix_description" flake.nix
 replace_literal "$old_url" "$web_url" flake.nix
 replace_literal 'Copyright (c) 2026 trev' "Copyright (c) $year $git_name" LICENSE
+
+if $is_library; then
+  # A library starts without the command or its dependencies.
+  rm main.go main_test.go
+  go_directive=$(grep -m 1 '^go ' go.mod)
+  toolchain_directive=$(grep -m 1 '^toolchain ' go.mod)
+  printf 'module %s\n\n%s\n\n%s\n' "$module" "$go_directive" "$toolchain_directive" >go.mod
+  : >go.sum
+  printf 'schema = 3\n\n[mod]\n' >gomod2nix.toml
+  cat >hello.go <<EOF
+// Package $package says hello.
+package $package
+
+import "fmt"
+
+// Hello returns a greeting for name.
+func Hello(name string) string {
+	return fmt.Sprintf("Hello, %s!", name)
+}
+EOF
+  cat >hello_test.go <<EOF
+package ${package}_test
+
+import (
+	"fmt"
+	"testing"
+
+	"$module"
+)
+
+func TestHello(t *testing.T) {
+	expected := "Hello, world!"
+	result := $package.Hello("world")
+	if result != expected {
+		t.Errorf("Hello(%q) = %q; want %q", "world", result, expected)
+	}
+}
+
+func ExampleHello() {
+	fmt.Println($package.Hello("world"))
+	// Output: Hello, world!
+}
+EOF
+
+  # There's no program to run or put in an image.
+  sed -i "/^              doInstallCheck = true;\$/,/^              '';\$/d" flake.nix
+  sed -i -E '/^                (mainProgram|downloadPage) = /d' flake.nix
+  sed -i '/^        # nix build #images/,/^        };$/d' flake.nix
+  sed -i '/^### run$/,/^### format$/{/^### format$/!d}' CONTRIBUTING.md
+
+  # flake-release publishes the module from the package's source, and only
+  # warns that the package has no outputs to archive.
+  for workflow in .github/workflows/release.yaml .forgejo/workflows/release.yaml; do
+    if [[ -f $workflow ]]; then
+      sed -i -E '/^            (packages|images)\.x86_64-linux\.default\./d; s/^(          PACKAGES:) \|$/\1 packages.x86_64-linux.default/' "$workflow"
+    fi
+  done
+  if [[ -f .github/workflows/release.yaml ]]; then
+    # GitHub has no Go registry, so the release publishes to pkg.go.dev instead
+    sed -i -e '/^      packages: write$/d' \
+      -e 's/^\(          GITHUB_TOKEN: .*\)$/\1\n          PKG_GO_DEV_PUBLISHING: "true"/' .github/workflows/release.yaml
+  fi
+  if [[ -f .forgejo/workflows/release.yaml ]]; then
+    sed -i -E '/^          (CONTAINER_REGISTRY_PASSWORD|DELETE_OLD_RELEASE_ARTIFACTS): /d' .forgejo/workflows/release.yaml
+  fi
+fi
 
 if [[ ${provider_host,,} == github.com ]]; then
   is_github=true
@@ -242,22 +328,32 @@ encoded_lock_url="${raw_url}/flake.lock"
 encoded_lock_url=${encoded_lock_url//:/%253A}
 encoded_lock_url=${encoded_lock_url//\//%252F}
 nixpkgs_badge="[![nixpkgs](https://img.shields.io/endpoint?url=https%3A%2F%2Fnix-shield.trev.zip%2Fbadge%3Furl%3D${encoded_lock_url}%26input%3Dnixpkgs&logoColor=%23bac2de&labelColor=%23313244&color=%235277C3)](https://nixos.org/)"
-language_badge="[![go](<https://img.shields.io/badge/dynamic/regex?url=${raw_url}/go.mod&search=toolchain%20go(.*)&replace=%241&logo=go&logoColor=%23bac2de&label=version&labelColor=%23313244&color=%2300ADD8>)](https://go.dev/doc/devel/release)"
+if $is_library; then
+  # Libraries show the minimum go version they support.
+  language_badge="[![go](<https://img.shields.io/badge/dynamic/regex?url=${raw_url}/go.mod&search=go%20(.*)&replace=%3E%3D%241&logo=go&logoColor=%23bac2de&label=version&labelColor=%23313244&color=%2300ADD8>)](https://go.dev/doc/devel/release)"
+else
+  language_badge="[![go](<https://img.shields.io/badge/dynamic/regex?url=${raw_url}/go.mod&search=toolchain%20go(.*)&replace=%241&logo=go&logoColor=%23bac2de&label=version&labelColor=%23313244&color=%2300ADD8>)](https://go.dev/doc/devel/release)"
+fi
 
-readme_sections=$(sed -n '/^## using$/,$p' README.md)
-readme_sections=${readme_sections//"$old_url"/"$web_url"}
-old_go_install=$'GOPROXY=https://trev.zip/api/packages/template/go \\\n    go install trev.zip/template/go@latest'
+old_go_install=$'GOPROXY=https://trev.zip/api/packages/template/go,https://proxy.golang.org,direct \\\n    go install trev.zip/template/go@latest'
 if $is_github; then
-  go_install="go install $provider_host/$repo_path@latest"
+  go_proxy=
   image="ghcr.io/${repo_path,,}:latest"
 else
   owner=${repo_path%%/*}
-  go_install="GOPROXY=${web_url%/$repo_path}/api/packages/$owner/go"$' \\\n    go install '"$provider_host/$repo_path@latest"
+  go_proxy="GOPROXY=${web_url%/$repo_path}/api/packages/$owner/go,https://proxy.golang.org,direct"$' \\\n    '
   image="$host/${repo_path,,}:latest"
 fi
-readme_sections=${readme_sections//"$old_go_install"/"$go_install"}
-readme_sections=${readme_sections//trev.zip\/template\/go:latest/"$image"}
-readme_sections=${readme_sections//"go run trev.zip/template/go@latest"/"go run $provider_host/$repo_path@latest"}
+if $is_library; then
+  readme_sections=$(sed -n '/^## contributing$/,$p' README.md)
+  printf -v readme_sections '## using\n\n```sh\n%sgo get %s@latest\n```\n\n%s' "$go_proxy" "$module" "$readme_sections"
+else
+  readme_sections=$(sed -n '/^## using$/,$p' README.md)
+  readme_sections=${readme_sections//"$old_url"/"$web_url"}
+  readme_sections=${readme_sections//"$old_go_install"/"${go_proxy}go install $module@latest"}
+  readme_sections=${readme_sections//trev.zip\/template\/go:latest/"$image"}
+  readme_sections=${readme_sections//"go run trev.zip/template/go@latest"/"go run $module@latest"}
+fi
 
 {
   printf '# %s\n\n' "$title"
