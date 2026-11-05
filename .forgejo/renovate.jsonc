@@ -15,6 +15,13 @@
   "nix": {
     "enabled": true
   },
+  // fix PRs for vulnerable direct and indirect go modules, from osv.dev
+  "osvVulnerabilityAlerts": true,
+  "dependencyDashboardOSVVulnerabilitySummary": "unresolved",
+  "vulnerabilityAlerts": {
+    "addLabels": ["security"],
+    "automerge": true
+  },
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true,
