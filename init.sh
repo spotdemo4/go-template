@@ -368,12 +368,12 @@ write_readme() {
   encoded_lock_url="${raw_url}/flake.lock"
   encoded_lock_url=${encoded_lock_url//:/%253A}
   encoded_lock_url=${encoded_lock_url//\//%252F}
-  nixpkgs_badge="[![nixpkgs](https://img.shields.io/endpoint?url=https%3A%2F%2Fnix-shield.trev.zip%2Fbadge%3Furl%3D${encoded_lock_url}%26input%3Dnixpkgs&logoColor=%23bac2de&labelColor=%23313244&color=%235277C3)](https://nixos.org/)"
+  nixpkgs_badge="[![nixpkgs](https://shields.trev.zip/endpoint?url=https%3A%2F%2Fnix-shield.trev.zip%2Fbadge%3Furl%3D${encoded_lock_url}%26input%3Dnixpkgs&logoColor=%23bac2de&labelColor=%23313244&color=%235277C3)](https://nixos.org/)"
   if $is_library; then
     # Libraries show the minimum go version they support.
-    language_badge="[![go](<https://img.shields.io/badge/dynamic/regex?url=${raw_url}/go.mod&search=go%20(.*)&replace=%3E%3D%241&logo=go&logoColor=%23bac2de&label=version&labelColor=%23313244&color=%2300ADD8>)](https://go.dev/doc/devel/release)"
+    language_badge="[![go](<https://shields.trev.zip/badge/dynamic/regex?url=${raw_url}/go.mod&search=go%20(.*)&replace=%3E%3D%241&logo=go&logoColor=%23bac2de&label=version&labelColor=%23313244&color=%2300ADD8>)](https://go.dev/doc/devel/release)"
   else
-    language_badge="[![go](<https://img.shields.io/badge/dynamic/regex?url=${raw_url}/go.mod&search=toolchain%20go(.*)&replace=%241&logo=go&logoColor=%23bac2de&label=version&labelColor=%23313244&color=%2300ADD8>)](https://go.dev/doc/devel/release)"
+    language_badge="[![go](<https://shields.trev.zip/badge/dynamic/regex?url=${raw_url}/go.mod&search=toolchain%20go(.*)&replace=%241&logo=go&logoColor=%23bac2de&label=version&labelColor=%23313244&color=%2300ADD8>)](https://go.dev/doc/devel/release)"
   fi
 
   old_go_install=$'GOPROXY=https://trev.zip/api/packages/template/go,https://proxy.golang.org,direct \\\n    go install trev.zip/template/go@latest'
