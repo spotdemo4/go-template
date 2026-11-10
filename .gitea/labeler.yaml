@@ -1,0 +1,21 @@
+# https://github.com/actions/labeler
+
+actions:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/workflows/**
+          - .forgejo/workflows/**
+          - .gitea/workflows/**
+
+go:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.go"
+          - "**/go.mod"
+          - "**/go.sum"
+
+nix:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.nix"
+          - "**/flake.lock"

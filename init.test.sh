@@ -139,7 +139,8 @@ test_application() (
   git add -A
   git commit --quiet --message 'Initial commit'
   # The build sandbox has no /usr/bin/env for the shebang
-  printf '%s\n' n n https://git.example.com/octo/hello-world '' '' | bash ./init.sh 'Hello World' "$description"
+  # GitHub (detected), application, no Gitea, Forgejo mirror, Zed, VS Code
+  printf '%s\n' '' n n y https://git.example.com/octo/hello-world '' '' | bash ./init.sh 'Hello World' "$description"
 
   assert_initialized github.com/octo/hello-world hello-world test@example.com
   assert_eq "$(jq -r .library .template.json)" null '.template.json library'
@@ -155,7 +156,8 @@ test_application() (
     'homepage = "https://github.com/octo/hello-world";' \
     'actions-gh = {' 'actions-fj = {' \
     'name = "Test User";' 'email = "test@example.com";'
-  assert_lacks flake.nix "$old_maintainer"
+  assert_lacks flake.nix "$old_maintainer" 'actions-gt = {' 'renovate-gt = {'
+  assert_missing .gitea
   assert_contains .github/renovate.jsonc '"repositories": ["octo/hello-world"]'
   assert_contains .forgejo/renovate.jsonc \
     '"endpoint": "https://git.example.com/api/v1"' \
@@ -171,12 +173,16 @@ test_library() (
   chmod -x init.sh
   # The template's author keeps their maintainer entry
   git config user.email Me@Trev.xyz
-  printf '%s\n' y y n n | bash init.sh 'Hello Lib' 'Says hello'
+  # Forgejo (detected), library, no GitHub, no Gitea, no Zed, no VS Code
+  printf '%s\n' '' y n n n n | bash init.sh 'Hello Lib' 'Says hello'
 
   assert_initialized git.example.com/octo/hello-lib hello-lib Me@Trev.xyz
   assert_eq "$(jq -r .library .template.json)" true '.template.json library'
   assert_contains flake.nix "maintainers = [ $old_maintainer ];"
   assert_eq "$(git remote)" origin remotes
+  assert_missing .gitea
+  assert_contains README.md 'logo=forgejo'
+  assert_lacks flake.nix 'actions-gt = {' 'renovate-gt = {'
   assert_missing main.go main_test.go .github .zed .vscode
   assert_contains README.md \
     'GOPROXY=https://git.example.com/api/packages/octo/go,https://proxy.golang.org,direct' \
@@ -195,14 +201,44 @@ test_library_github() (
   cd "$project"
   git add -A
   git commit --quiet --message 'Initial commit'
-  printf '%s\n' y y n n | bash ./init.sh 'Hello GH' 'Says hello'
+  # GitHub (detected), library, no Gitea, no Forgejo, no Zed, no VS Code
+  printf '%s\n' '' y n n n n | bash ./init.sh 'Hello GH' 'Says hello'
 
   assert_initialized github.com/octo/hello-gh hello-gh test@example.com
-  assert_missing main.go .forgejo
+  assert_missing main.go .forgejo .gitea
   assert_contains README.md 'go get github.com/octo/hello-gh@latest'
   assert_lacks README.md GOPROXY 'go install' 'docker run'
   assert_contains .github/workflows/release.yaml 'PACKAGES: packages.x86_64-linux.default'
   assert_lacks .github/workflows/release.yaml 'packages: write' PKG_GO_DEV_PUBLISHING images.x86_64-linux
+)
+
+test_gitea() (
+  local project=$tmp/hello-gitea
+  new_project "$project" https://gitea.example.com/octo/hello-gitea.git
+  cd "$project"
+  git add -A
+  git commit --quiet --message 'Initial commit'
+  # Gitea, library, GitHub mirror, no Forgejo, no Zed, no VS Code
+  printf '%s\n' Gitea y y git@github.com:octo/hello-mirror.git n n n | bash ./init.sh 'Hello Gitea' 'Says hello'
+
+  assert_initialized gitea.example.com/octo/hello-gitea hello-gitea test@example.com
+  assert_eq "$(git remote)" $'github\norigin' remotes
+  assert_eq "$(git remote get-url github)" git@github.com:octo/hello-mirror.git 'github remote'
+  assert_missing .forgejo .zed .vscode
+  assert_contains README.md \
+    'https://gitea.example.com/octo/hello-gitea/actions?workflow=check.yaml' \
+    'logo=gitea' \
+    'GOPROXY=https://gitea.example.com/api/packages/octo/go,https://proxy.golang.org,direct' \
+    'go get gitea.example.com/octo/hello-gitea@latest'
+  assert_contains flake.nix 'actions-gt = {' 'renovate-gt = {' 'actions-gh = {' 'renovate-gh = {'
+  assert_lacks flake.nix 'actions-fj = {' 'renovate-fj = {'
+  assert_contains .gitea/renovate.jsonc \
+    '"platform": "gitea"' \
+    '"endpoint": "https://gitea.example.com/api/v1"' \
+    '"repositories": ["octo/hello-gitea"]'
+  assert_contains .github/renovate.jsonc '"repositories": ["octo/hello-mirror"]'
+  assert_contains .gitea/workflows/release.yaml 'PACKAGES: packages.x86_64-linux.default'
+  assert_lacks .gitea/workflows/release.yaml CONTAINER_REGISTRY_PASSWORD DELETE_OLD_RELEASE_ARTIFACTS images.x86_64-linux
 )
 
 test_rollback() (
@@ -218,9 +254,17 @@ test_rollback() (
     bash ./init.sh Rollback Rollback </dev/null
   rm untracked
 
-  # The Forgejo URL is read after the template has been changed
+  # The forge is checked before the template is changed
+  assert_fails 'Forge must be github, gitea or forgejo.' \
+    bash ./init.sh Rollback Rollback < <(printf '%s\n' gitlab)
+  assert_fails 'Gitea origin URL cannot use github.com.' \
+    bash ./init.sh Rollback Rollback < <(printf '%s\n' gitea)
+
+  # Mirror URLs are read after the template has been changed
   assert_fails 'Unsupported repository URL.' \
-    bash ./init.sh Rollback Rollback < <(printf '%s\n' n n ftp://git.example.com/octo/rollback)
+    bash ./init.sh Rollback Rollback < <(printf '%s\n' '' n n y ftp://git.example.com/octo/rollback)
+  assert_fails 'Gitea repository URL cannot use github.com.' \
+    bash ./init.sh Rollback Rollback < <(printf '%s\n' github n y https://github.com/octo/rollback)
   assert_eq "$(git rev-parse HEAD)" "$head" HEAD
   assert_eq "$(git status --porcelain --untracked-files=all)" '' 'worktree status'
   assert_missing "$tmp"/.rollback.git-*
@@ -237,7 +281,7 @@ chmod +x "$tmp/bin/nix"
 PATH=$tmp/bin:$PATH
 
 create_upstream
-for test in test_parse_remote test_slugify test_go_package test_nix_string test_application test_library test_library_github test_rollback; do
+for test in test_parse_remote test_slugify test_go_package test_nix_string test_application test_library test_library_github test_gitea test_rollback; do
   "$test"
   printf 'ok: %s\n' "$test"
 done
