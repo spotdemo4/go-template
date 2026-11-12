@@ -12,7 +12,7 @@ source ./init.sh
 template=$PWD
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
-export HOME=$tmp/home XDG_CONFIG_HOME=$tmp/home/.config GIT_CONFIG_NOSYSTEM=1
+export HOME=$tmp/home XDG_CONFIG_HOME=$tmp/home/.config GIT_CONFIG_NOSYSTEM=1 GOTOOLCHAIN=local
 mkdir "$HOME"
 
 fail() {
@@ -192,7 +192,7 @@ test_library() (
   assert_contains .forgejo/workflows/release.yaml 'PACKAGES: packages.x86_64-linux.default'
   assert_lacks .forgejo/workflows/release.yaml CONTAINER_REGISTRY_PASSWORD images.x86_64-linux
   assert_lacks CONTRIBUTING.md '### run'
-  GOFLAGS=-mod=mod GOPROXY=off GOTOOLCHAIN=local go test ./...
+  GOFLAGS=-mod=mod GOPROXY=off go test ./...
 )
 
 test_library_github() (
