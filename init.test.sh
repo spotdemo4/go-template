@@ -162,6 +162,8 @@ test_application() (
   assert_contains .forgejo/renovate.jsonc \
     '"endpoint": "https://git.example.com/api/v1"' \
     '"repositories": ["octo/hello-world"]'
+  assert_contains .forgejo/workflows/release.yaml CONTAINER_REGISTRY_PASSWORD
+  assert_lacks .forgejo/workflows/release.yaml PACKAGE_REGISTRY_TOKEN
   [[ -f main.go && -d .zed && -d .vscode ]] || fail 'application files are missing'
 )
 
@@ -187,7 +189,8 @@ test_library() (
   assert_contains README.md 'go get git.example.com/octo/hello-lib@latest'
   assert_lacks README.md GOPROXY 'go install' 'docker run'
   assert_lacks flake.nix mainProgram installCheckPhase 'images = {' 'actions-gh = {' 'renovate-gh = {'
-  assert_contains .forgejo/workflows/release.yaml 'PACKAGES: packages.x86_64-linux.default'
+  assert_contains .forgejo/workflows/release.yaml 'PACKAGES: packages.x86_64-linux.default' \
+    'PACKAGE_REGISTRY_TOKEN: ${{ secrets.PACKAGE_TOKEN }}'
   assert_lacks .forgejo/workflows/release.yaml CONTAINER_REGISTRY_PASSWORD images.x86_64-linux
   assert_lacks CONTRIBUTING.md '### run'
   GOFLAGS=-mod=mod GOPROXY=off go test ./...
@@ -234,7 +237,8 @@ test_gitea() (
     '"endpoint": "https://gitea.example.com/api/v1"' \
     '"repositories": ["octo/hello-gitea"]'
   assert_contains .github/renovate.jsonc '"repositories": ["octo/hello-mirror"]'
-  assert_contains .gitea/workflows/release.yaml 'PACKAGES: packages.x86_64-linux.default'
+  assert_contains .gitea/workflows/release.yaml 'PACKAGES: packages.x86_64-linux.default' \
+    'PACKAGE_REGISTRY_TOKEN: ${{ secrets.PACKAGE_TOKEN }}'
   assert_lacks .gitea/workflows/release.yaml CONTAINER_REGISTRY_PASSWORD DELETE_OLD_RELEASE_ARTIFACTS images.x86_64-linux
 )
 

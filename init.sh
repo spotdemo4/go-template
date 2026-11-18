@@ -379,9 +379,13 @@ EOF
     # PKG_GO_DEV_PUBLISHING opts in to publishing it to pkg.go.dev.
     sed -i '/^      packages: write$/d' .github/workflows/release.yaml
   fi
+  # Gitea and Forgejo publish the module to their Go registry, which
+  # flake-release does when PACKAGE_REGISTRY_TOKEN is set. It uses the
+  # container registry's token, which the library no longer needs.
   for workflow in .gitea/workflows/release.yaml .forgejo/workflows/release.yaml; do
     if [[ -f $workflow ]]; then
-      sed -i -E '/^          (CONTAINER_REGISTRY_PASSWORD|DELETE_OLD_RELEASE_ARTIFACTS): /d' "$workflow"
+      sed -i -E -e 's/^          CONTAINER_REGISTRY_PASSWORD: /          PACKAGE_REGISTRY_TOKEN: /' \
+        -e '/^          DELETE_OLD_RELEASE_ARTIFACTS: /d' "$workflow"
     fi
   done
 }
