@@ -184,10 +184,8 @@ test_library() (
   assert_contains README.md 'logo=forgejo'
   assert_lacks flake.nix 'actions-gt = {' 'renovate-gt = {'
   assert_missing main.go main_test.go .github .zed .vscode
-  assert_contains README.md \
-    'GOPROXY=https://git.example.com/api/packages/octo/go,https://proxy.golang.org,direct' \
-    'go get git.example.com/octo/hello-lib@latest'
-  assert_lacks README.md 'go install' 'docker run'
+  assert_contains README.md 'go get git.example.com/octo/hello-lib@latest'
+  assert_lacks README.md GOPROXY 'go install' 'docker run'
   assert_lacks flake.nix mainProgram installCheckPhase 'images = {' 'actions-gh = {' 'renovate-gh = {'
   assert_contains .forgejo/workflows/release.yaml 'PACKAGES: packages.x86_64-linux.default'
   assert_lacks .forgejo/workflows/release.yaml CONTAINER_REGISTRY_PASSWORD images.x86_64-linux
@@ -228,7 +226,6 @@ test_gitea() (
   assert_contains README.md \
     'https://gitea.example.com/octo/hello-gitea/actions?workflow=check.yaml' \
     'logo=gitea' \
-    'GOPROXY=https://gitea.example.com/api/packages/octo/go,https://proxy.golang.org,direct' \
     'go get gitea.example.com/octo/hello-gitea@latest'
   assert_contains flake.nix 'actions-gt = {' 'renovate-gt = {' 'actions-gh = {' 'renovate-gh = {'
   assert_lacks flake.nix 'actions-fj = {' 'renovate-fj = {'

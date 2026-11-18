@@ -390,7 +390,7 @@ EOF
 # instructions at the project.
 write_readme() {
   local raw_url check_badge vulnerable_badge encoded_lock_url nixpkgs_badge language_badge
-  local old_go_install go_proxy image owner readme_sections
+  local image readme_sections
   if $is_github; then
     raw_url="https://raw.githubusercontent.com/${repo_path}/refs/heads/main"
     check_badge="[![check](${web_url}/actions/workflows/check.yaml/badge.svg?branch=main)](${web_url}/actions/workflows/check.yaml)"
@@ -413,22 +413,18 @@ write_readme() {
     language_badge="[![go](<https://shields.trev.zip/badge/dynamic/regex?url=${raw_url}/go.mod&search=toolchain%20go(.*)&replace=%241&logo=go&logoColor=%23bac2de&label=version&labelColor=%23313244&color=%2300ADD8>)](https://go.dev/doc/devel/release)"
   fi
 
-  old_go_install=$'GOPROXY=https://trev.zip/api/packages/template/go,https://proxy.golang.org,direct \\\n    go install trev.zip/template/go@latest'
   if $is_github; then
-    go_proxy=
     image="ghcr.io/${repo_path,,}:latest"
   else
-    owner=${repo_path%%/*}
-    go_proxy="GOPROXY=${web_url%/"$repo_path"}/api/packages/$owner/go,https://proxy.golang.org,direct"$' \\\n    '
     image="$host/${repo_path,,}:latest"
   fi
   if $is_library; then
     readme_sections=$(sed -n '/^## contributing$/,$p' README.md)
-    printf -v readme_sections '## using\n\n```sh\n%sgo get %s@latest\n```\n\n%s' "$go_proxy" "$module" "$readme_sections"
+    printf -v readme_sections '## using\n\n```sh\ngo get %s@latest\n```\n\n%s' "$module" "$readme_sections"
   else
     readme_sections=$(sed -n '/^## using$/,$p' README.md)
     readme_sections=${readme_sections//"$old_url"/"$web_url"}
-    readme_sections=${readme_sections//"$old_go_install"/"${go_proxy}go install $module@latest"}
+    readme_sections=${readme_sections//"go install trev.zip/template/go@latest"/"go install $module@latest"}
     readme_sections=${readme_sections//trev.zip\/template\/go:latest/"$image"}
     readme_sections=${readme_sections//"go run trev.zip/template/go@latest"/"go run $module@latest"}
   fi

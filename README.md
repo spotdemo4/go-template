@@ -27,8 +27,7 @@ part of [trev.zip/template](https://trev.zip/template)
 ### go
 
 ```sh
-GOPROXY=https://trev.zip/api/packages/template/go,https://proxy.golang.org,direct \
-    go install trev.zip/template/go@latest
+go install trev.zip/template/go@latest
 ```
 
 ```sh
