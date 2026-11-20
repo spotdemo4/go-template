@@ -139,8 +139,9 @@ test_application() (
   git add -A
   git commit --quiet --message 'Initial commit'
   # The build sandbox has no /usr/bin/env for the shebang
-  # GitHub (detected), application, no Gitea, Forgejo mirror, Zed, VS Code
-  printf '%s\n' '' n n y https://git.example.com/octo/hello-world '' '' | bash ./init.sh 'Hello World' "$description"
+  # GitHub (detected), application, no Gitea, Forgejo mirror, Zed, VS Code,
+  # Claude Code
+  printf '%s\n' '' n n y https://git.example.com/octo/hello-world '' '' '' | bash ./init.sh 'Hello World' "$description"
 
   assert_initialized github.com/octo/hello-world hello-world test@example.com
   assert_eq "$(jq -r .library .template.json)" null '.template.json library'
@@ -165,6 +166,8 @@ test_application() (
   assert_contains .forgejo/workflows/release.yaml CONTAINER_REGISTRY_PASSWORD
   assert_lacks .forgejo/workflows/release.yaml PACKAGE_REGISTRY_TOKEN
   [[ -f main.go && -d .zed && -d .vscode ]] || fail 'application files are missing'
+  assert_eq "$(git ls-files .claude)" .claude/skills 'tracked .claude files'
+  assert_eq "$(readlink .claude/skills)" ../.agents/skills '.claude/skills target'
 )
 
 test_library() (
@@ -175,8 +178,9 @@ test_library() (
   chmod -x init.sh
   # The template's author keeps their maintainer entry
   git config user.email Me@Trev.xyz
-  # Forgejo (detected), library, no GitHub, no Gitea, no Zed, no VS Code
-  printf '%s\n' '' y n n n n | bash init.sh 'Hello Lib' 'Says hello'
+  # Forgejo (detected), library, no GitHub, no Gitea, no Zed, no VS Code, no
+  # Claude Code
+  printf '%s\n' '' y n n n n n | bash init.sh 'Hello Lib' 'Says hello'
 
   assert_initialized git.example.com/octo/hello-lib hello-lib Me@Trev.xyz
   assert_eq "$(jq -r .library .template.json)" true '.template.json library'
@@ -185,7 +189,8 @@ test_library() (
   assert_missing .gitea
   assert_contains README.md 'logo=forgejo'
   assert_lacks flake.nix 'actions-gt = {' 'renovate-gt = {'
-  assert_missing main.go main_test.go .github .zed .vscode
+  assert_missing main.go main_test.go .github .zed .vscode .claude
+  [[ -f .agents/skills/template-sync/SKILL.md ]] || fail '.agents/skills is missing'
   assert_contains README.md 'go get git.example.com/octo/hello-lib@latest'
   assert_lacks README.md GOPROXY 'go install' 'docker run'
   assert_lacks flake.nix mainProgram installCheckPhase 'images = {' 'actions-gh = {' 'renovate-gh = {'
@@ -202,11 +207,13 @@ test_library_github() (
   cd "$project"
   git add -A
   git commit --quiet --message 'Initial commit'
-  # GitHub (detected), library, no Gitea, no Forgejo, no Zed, no VS Code
-  printf '%s\n' '' y n n n n | bash ./init.sh 'Hello GH' 'Says hello'
+  # GitHub (detected), library, no Gitea, no Forgejo, no Zed, no VS Code, Claude
+  # Code
+  printf '%s\n' '' y n n n n y | bash ./init.sh 'Hello GH' 'Says hello'
 
   assert_initialized github.com/octo/hello-gh hello-gh test@example.com
   assert_missing main.go .forgejo .gitea
+  [[ -L .claude/skills ]] || fail '.claude/skills is missing'
   assert_contains README.md 'go get github.com/octo/hello-gh@latest'
   assert_lacks README.md GOPROXY 'go install' 'docker run'
   assert_contains .github/workflows/release.yaml 'PACKAGES: packages.x86_64-linux.default'
@@ -219,13 +226,14 @@ test_gitea() (
   cd "$project"
   git add -A
   git commit --quiet --message 'Initial commit'
-  # Gitea, library, GitHub mirror, no Forgejo, no Zed, no VS Code
-  printf '%s\n' Gitea y y git@github.com:octo/hello-mirror.git n n n | bash ./init.sh 'Hello Gitea' 'Says hello'
+  # Gitea, library, GitHub mirror, no Forgejo, no Zed, no VS Code, no Claude
+  # Code
+  printf '%s\n' Gitea y y git@github.com:octo/hello-mirror.git n n n n | bash ./init.sh 'Hello Gitea' 'Says hello'
 
   assert_initialized gitea.example.com/octo/hello-gitea hello-gitea test@example.com
   assert_eq "$(git remote)" $'github\norigin' remotes
   assert_eq "$(git remote get-url github)" git@github.com:octo/hello-mirror.git 'github remote'
-  assert_missing .forgejo .zed .vscode
+  assert_missing .forgejo .zed .vscode .claude
   assert_contains README.md \
     'https://gitea.example.com/octo/hello-gitea/actions?workflow=check.yaml' \
     'logo=gitea' \
