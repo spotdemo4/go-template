@@ -38,7 +38,7 @@
         # nix develop [#...]
         devShells = {
           default = pkgs.mkShell {
-            shellHook = pkgs.shellhook.ref;
+            shellHook = pkgs.trev.shellhook.ref;
             env.GOTOOLCHAIN = "local";
             packages = with pkgs; [
               # go
@@ -58,26 +58,26 @@
 
               # util
               treefmt
-              bumper
+              trev.bumper
               gomod2nix.packages.${system}.default
             ];
           };
 
           bump = pkgs.mkShell {
             packages = with pkgs; [
-              bumper
+              trev.bumper
             ];
           };
 
           release = pkgs.mkShell {
             packages = with pkgs; [
-              flake-release
+              trev.flake-release
             ];
           };
 
           update = pkgs.mkShell {
             packages = with pkgs; [
-              renovate
+              trev.renovate
               go # go mod tidy
             ];
           };
@@ -93,7 +93,7 @@
         };
 
         # nix run [#...]
-        apps = pkgs.mkApps {
+        apps = pkgs.trev.libs.mkApps {
           update-deps = {
             packages = with pkgs; [
               go
@@ -108,7 +108,7 @@
 
         # nix build [#...]
         packages = {
-          default = pkgs.mkGoModule (
+          default = pkgs.trev.libs.mkGoModule (
             final: with pkgs.lib; {
               pname = "go-template";
               version = "0.20.1";
@@ -155,7 +155,7 @@
 
         # nix build #images.[...]
         images = {
-          default = pkgs.mkImage {
+          default = pkgs.trev.libs.mkImage {
             src = self.packages.${system}.default;
           };
         };
@@ -190,7 +190,7 @@
         };
 
         # nix flake check
-        checks = pkgs.mkChecks {
+        checks = pkgs.trev.libs.mkChecks {
           go-lint = {
             src = self.packages.${system}.default;
             packages = with pkgs; [ golangci-lint ];
@@ -271,7 +271,7 @@
             root = ./.github;
             files = ./.github/renovate.jsonc;
             packages = with pkgs; [
-              renovate
+              trev.renovate
             ];
             script = ''
               renovate-config-validator renovate.jsonc
@@ -282,7 +282,7 @@
             root = ./.forgejo;
             files = ./.forgejo/renovate.jsonc;
             packages = with pkgs; [
-              renovate
+              trev.renovate
             ];
             script = ''
               renovate-config-validator renovate.jsonc
@@ -293,7 +293,7 @@
             root = ./.gitea;
             files = ./.gitea/renovate.jsonc;
             packages = with pkgs; [
-              renovate
+              trev.renovate
             ];
             script = ''
               renovate-config-validator renovate.jsonc
