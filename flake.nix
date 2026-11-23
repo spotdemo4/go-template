@@ -111,7 +111,7 @@
           default = pkgs.trev.libs.mkGoModule (
             final: with pkgs.lib; {
               pname = "go-template";
-              version = "0.20.1";
+              version = "0.21.0";
 
               src = fileset.toSource {
                 root = ./.;
