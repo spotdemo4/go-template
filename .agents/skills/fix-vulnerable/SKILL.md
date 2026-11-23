@@ -27,10 +27,11 @@ Renovate opens automerging fix PRs for vulnerable direct dependencies, so check 
 
 ### Standard library
 
-A `stdlib` finding is fixed by a newer Go release, which this project gets from the `go` in nixpkgs, not from `go.mod`. The `toolchain` line in `go.mod` is kept equal to nixpkgs-unstable's `go` by a Renovate custom manager, and the `go` line is only the minimum language version, so leave it.
+A `stdlib` finding is fixed by a newer Go release, which this project gets from trevpkgs' `go-latest`, not from `go.mod`. `go-latest` is the latest patch release of nixpkgs' `go_latest` minor version, usually ahead of nixpkgs. The `toolchain` line in `go.mod` can't be newer than its version, which the `go-toolchain` check enforces, and Renovate updates it to upstream Go releases. The `go` line is only the minimum language version, so leave it.
 
-1. Run `nix flake update nixpkgs` to get the patched `go`, then check that `nix develop .#vulnerable -c go version` is at or above the fixed version. If nixpkgs-unstable doesn't have it yet, there is nothing to fix until it does, so tell the user.
-2. Set the `toolchain` line in `go.mod` to that version with `go mod edit -toolchain=go<version>`, never higher than the `go` in nixpkgs, then run `nix run .#update-deps`.
+1. Check for an open Renovate PR updating the `toolchain` line. Its `go-toolchain` check fails until the locked trevpkgs has that release, so fix it on that PR's branch instead of opening a competing one.
+2. Run `nix flake update trevpkgs` to get the patched `go-latest`, then check that `nix develop .#vulnerable -c go version` is at or above the fixed version. If trevpkgs doesn't have it yet, there is nothing to fix until it does, so tell the user. A fix only released in a newer minor version reaches `go-latest` once nixpkgs' `go_latest` moves to it.
+3. Set the `toolchain` line in `go.mod` to that version with `go mod edit -toolchain=go<version>`, then run `nix run .#update-deps`.
 
 ## flake-checker
 

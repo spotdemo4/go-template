@@ -42,7 +42,7 @@
             env.GOTOOLCHAIN = "local";
             packages = with pkgs; [
               # go
-              go
+              trev.go-latest
               gopls
               gotools
               golangci-lint
@@ -78,13 +78,13 @@
           update = pkgs.mkShell {
             packages = with pkgs; [
               trev.renovate
-              go # go mod tidy
+              trev.go-latest # go mod tidy
             ];
           };
 
           vulnerable = pkgs.mkShell {
             packages = with pkgs; [
-              go
+              trev.go-latest
               govulncheck # go
               flake-checker # nix
               zizmor # actions
@@ -96,7 +96,7 @@
         apps = pkgs.trev.libs.mkApps {
           update-deps = {
             packages = with pkgs; [
-              go
+              trev.go-latest
               gomod2nix.packages.${system}.default
             ];
             script = ''
@@ -200,11 +200,31 @@
             '';
           };
 
+          # go.mod's toolchain line can't be newer than the go that builds the package
+          go-toolchain = {
+            root = ./.;
+            files = ./go.mod;
+            packages = with pkgs; [
+              self.packages.${system}.default.passthru.go
+              jq
+            ];
+            script = ''
+              export GOTOOLCHAIN=local
+              toolchain=$(go mod edit -json | jq -r '.Toolchain // empty')
+              version=$(go env GOVERSION)
+              if [[ -n "$toolchain" && "$(printf '%s\n' "$toolchain" "$version" | sort -V | tail -n 1)" != "$version" ]]; then
+                echo "go.mod's toolchain line is $toolchain, but the package is built with $version" >&2
+                echo "run 'nix flake update trevpkgs' once trevpkgs' go-latest has $toolchain" >&2
+                exit 1
+              fi
+            '';
+          };
+
           init = {
             root = ./.;
             packages = with pkgs; [
               git
-              go
+              trev.go-latest
               jq
               shellcheck
               self.formatter.${system}

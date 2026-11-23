@@ -29,18 +29,6 @@
     "schedule": ["* * * * 0"], // sunday
     "skipInstalls": false
   },
-  "customManagers": [
-    {
-      // track the go in nixpkgs-unstable, which builds this project
-      "customType": "regex",
-      "managerFilePatterns": ["/(^|/)go\\.mod$/"],
-      "matchStrings": ["toolchain\\s+go(?<currentValue>\\S+)"],
-      "depNameTemplate": "go",
-      "packageNameTemplate": "nix_unstable/go",
-      "datasourceTemplate": "repology",
-      "versioningTemplate": "semver"
-    }
-  ],
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
@@ -60,6 +48,9 @@
       "addLabels": ["actions"]
     },
     {
+      // includes go.mod's toolchain line, which tracks upstream go releases. Its
+      // PRs fail the go-toolchain check until the locked trevpkgs' go-latest has
+      // the release, then lock file maintenance brings it in and they're rebased
       "matchManagers": ["gomod"],
       "addLabels": ["go"],
       "postUpdateOptions": ["gomodUpdateImportPaths"],
@@ -68,17 +59,6 @@
         "commands": ["nix run .#update-deps"],
         "executionMode": "branch"
       }
-    },
-    {
-      // replaced by the nixpkgs-unstable custom manager
-      "matchManagers": ["gomod"],
-      "matchDepTypes": ["toolchain"],
-      "enabled": false
-    },
-    {
-      "matchManagers": ["custom.regex"],
-      "matchDepNames": ["go"],
-      "addLabels": ["go"]
     }
   ]
 }
